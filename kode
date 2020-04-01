@@ -1,0 +1,18 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+
+header()
+{
+printf "***********************************************#\n" 
+printf "%-15s %s %-30s %s\n" "# Project title" ':'  $1 '#' 
+printf "%-15s %s %-30s %s\n" "# Description" ':' "" '#' 
+printf "%-15s %s %-30s %s\n" "# Author" ':' Laraib07 '#' 
+printf "%-15s %s %-30s %s\n" "# Last updated" ':'  "$(date)" '#' 
+printf "%-15s %s %-30s %s\n" "# Notes" ":" ""  '#'     
+printf "#***********************************************" 
+
+}
+
+printf "/*$(header $1)*/\n" >> $1
+printf "#*$(header $1)*#\n" >> $1
+
