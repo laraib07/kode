@@ -13,6 +13,13 @@ printf "#***********************************************"
 
 }
 
+shebang()
+{
+        environment=$( [[ "$1" =~ .\.py$ ]] && echo python3 || echo bash )
+        touch $1
+        echo "#!$(which env) $environment" > $1
+        chmod u+x $1
+}
 printf "/*$(header $1)*/\n" >> $1
 printf "#*$(header $1)*#\n" >> $1
 
