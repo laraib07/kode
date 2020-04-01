@@ -7,7 +7,7 @@ printf "***********************************************#\n"
 printf "%-15s %s %-30s %s\n" "# Project title" ':'  $1 '#' 
 printf "%-15s %s %-30s %s\n" "# Description" ':' "" '#' 
 printf "%-15s %s %-30s %s\n" "# Author" ':' Laraib07 '#' 
-printf "%-15s %s %-30s %s\n" "# Last updated" ':'  "$(date)" '#' 
+printf "%-15s %s %-30s %s\n" "# Last updated" ':'  "$(date  '+%a %d %b %y   %r')" '#' 
 printf "%-15s %s %-30s %s\n" "# Notes" ":" ""  '#'     
 printf "#***********************************************" 
 
@@ -16,10 +16,50 @@ printf "#***********************************************"
 shebang()
 {
         environment=$( [[ "$1" =~ .\.py$ ]] && echo python3 || echo bash )
-        touch $1
         echo "#!$(which env) $environment" > $1
-        chmod u+x $1
 }
-printf "/*$(header $1)*/\n" >> $1
-printf "#*$(header $1)*#\n" >> $1
+#printf "/*$(header $1)*/\n" >> $1
+#printf "#*$(header $1)*#\n" >> $1
+echo "/*$(header $1)*/\n" >> $1
+echo "#*$(header $1)*#\n" >> $1
 
+help()
+{
+        echo -e "Usage : kode [option] [file...]" 
+        echo -e " -h    --help      Print help" 
+        echo -e " -v    --version   Print version"
+        echo -e " -a    --author    Set author name" 
+}
+
+version()
+{
+        echo "kode v0.4"
+        echo "A bash script to add header in your codes"
+}
+
+author()
+{
+        read -p "Enter author's name : "
+}
+
+while [[ -n "$1" ]]; do
+    case $1 in
+        "-h" | "--help" )
+                help ;;
+
+        "-v" | "--version" )
+                about ;;
+
+        [!-]* )
+            [[ -f "$1" ]] && FileExist $1     
+            
+            [[ $? -eq 0 && ! -n "$2" ]] && editor $1 ;;
+
+        * )
+                echo
+            echo "$1 is Invalid Option"
+            echo "Try \"-h\" or \"--h\" for Help!"
+            echo
+    esac
+    shift
+done
