@@ -1,3 +1,7 @@
+## v0.5
+added more essential functions like
+ * set author name
+
 ## v0.4
 added more functions like
  * help

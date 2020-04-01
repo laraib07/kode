@@ -1,12 +1,23 @@
 #!/bin/env bash
 
+AUTHOR="$PREFIX/share/kode"
+
+#colors
+R='\033[1;31m'
+G='\033[1;32m'
+W='\033[1;37m'
+off='\033[0m'
+t='        '
+OK='\033[1;37m[\033[1;32m OK \033[1;37m]'
+NOK='\033[1;37m[\033[1;31m !! \033[1;37m]'
+
 
 header()
 {
 printf "***********************************************#\n" 
 printf "%-15s %s %-30s %s\n" "# Project title" ':'  $1 '#' 
 printf "%-15s %s %-30s %s\n" "# Description" ':' "" '#' 
-printf "%-15s %s %-30s %s\n" "# Author" ':' Laraib07 '#' 
+printf "%-15s %s %-30s %s\n" "# Author" ':' "$(less $AUTHOR/author.name)" '#' 
 printf "%-15s %s %-30s %s\n" "# Last updated" ':'  "$(date  '+%a %d %b %y   %r')" '#' 
 printf "%-15s %s %-30s %s\n" "# Notes" ":" ""  '#'     
 printf "#***********************************************" 
@@ -20,12 +31,24 @@ shebang()
 }
 #printf "/*$(header $1)*/\n" >> $1
 #printf "#*$(header $1)*#\n" >> $1
-echo "/*$(header $1)*/\n" >> $1
-echo "#*$(header $1)*#\n" >> $1
+set_author()
+{
+        if [[ ! -d $AUTHOR ]]
+        then
+                mkdir -p $AUTHOR
+                touch $AUTHOR/author.name
+        fi
+
+        echo -e "${W}${NOK} Enter author's name :${off} \c"
+        read AUTHOR_NAME
+
+        printf "%.30s" "$AUTHOR_NAME" > $AUTHOR/author.name
+        echo -e "${OK} Author name $AUTHOR_NAME set successfully"
+}
 
 help()
 {
-        echo -e "Usage : kode [option] [file...]" 
+        echo -e "Usage : ${W}kode${off} [option] [file...]" 
         echo -e " -h    --help      Print help" 
         echo -e " -v    --version   Print version"
         echo -e " -a    --author    Set author name" 
@@ -37,10 +60,8 @@ version()
         echo "A bash script to add header in your codes"
 }
 
-author()
-{
-        read -p "Enter author's name : "
-}
+echo -e "/*$(header $1)*/\n" >> $1
+echo -e "#*$(header $1)*#\n" >> $1
 
 while [[ -n "$1" ]]; do
     case $1 in
@@ -48,10 +69,13 @@ while [[ -n "$1" ]]; do
                 help ;;
 
         "-v" | "--version" )
-                about ;;
+                version ;;
+
+        "-a" | "--author" )
+               set_author ;;
 
         [!-]* )
-            [[ -f "$1" ]] && FileExist $1     
+            [[ -f "$1" ]] && file_exist $1     
             
             [[ $? -eq 0 && ! -n "$2" ]] && editor $1 ;;
 
@@ -63,3 +87,4 @@ while [[ -n "$1" ]]; do
     esac
     shift
 done
+
