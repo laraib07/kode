@@ -8,8 +8,6 @@ G='\033[1;32m'
 W='\033[1;37m'
 off='\033[0m'
 t='        '
-OK='\033[1;37m[\033[1;32m OK \033[1;37m]'
-NOK='\033[1;37m[\033[1;31m !! \033[1;37m]'
 
 
 header()
@@ -17,7 +15,7 @@ header()
 printf "***********************************************#\n" 
 printf "%-15s %s %-30s %s\n" "# Project title" ':'  $1 '#' 
 printf "%-15s %s %-30s %s\n" "# Description" ':' "" '#' 
-printf "%-15s %s %-30s %s\n" "# Author" ':' "$(less $AUTHOR/author.name)" '#' 
+printf "%-15s %s %-30s %s\n" "# Author" ':' "$(< $AUTHOR/author.name)" '#' 
 printf "%-15s %s %-30s %s\n" "# Last updated" ':'  "$(date  '+%a %d %b %y   %r')" '#' 
 printf "%-15s %s %-30s %s\n" "# Notes" ":" ""  '#'     
 printf "#***********************************************" 
@@ -29,8 +27,8 @@ shebang()
         environment=$( [[ "$1" =~ .\.py$ ]] && echo python3 || echo bash )
         echo "#!$(which env) $environment" > $1
 }
-#printf "/*$(header $1)*/\n" >> $1
-#printf "#*$(header $1)*#\n" >> $1
+
+
 set_author()
 {
         if [[ ! -d $AUTHOR ]]
@@ -39,12 +37,15 @@ set_author()
                 touch $AUTHOR/author.name
         fi
 
-        echo -e "${W}${NOK} Enter author's name :${off} \c"
+        echo -e "${R} >>${W} Enter author's name :${off} \c"
         read AUTHOR_NAME
 
         printf "%.30s" "$AUTHOR_NAME" > $AUTHOR/author.name
-        echo -e "${OK} Author name $AUTHOR_NAME set successfully"
+        echo -e "${G} >>${W} Author name $AUTHOR_NAME set successfully"
 }
+
+#file_exist()
+#init()
 
 help()
 {
