@@ -12,31 +12,31 @@ t='        '
 
 header()
 {
-printf "***********************************************#\n" 
-printf "%-15s %s %-30s %s\n" "# Project title" ':'  $1 '#' 
-printf "%-15s %s %-30s %s\n" "# Description" ':' "" '#' 
-printf "%-15s %s %-30s %s\n" "# Author" ':' "$(< $AUTHOR/author.name)" '#' 
-printf "%-15s %s %-30s %s\n" "# Last updated" ':'  "$(date  '+%a %d %b %y   %r')" '#' 
-printf "%-15s %s %-30s %s\n" "# Notes" ":" ""  '#'     
-printf "#***********************************************" 
+        printf "***********************************************#\n"
+        printf "%-15s %s %-30s %s\n" "# Project title" ':'  $1 '#'
+        printf "%-15s %s %-30s %s\n" "# Description" ':' "" '#'
+        printf "%-15s %s %-30s %s\n" "# Author" ':' "$(< $AUTHOR/author.name)" '#'
+        printf "%-15s %s %-30s %s\n" "# Last updated" ':'  "$(date  '+%a %d %b %y   %r')" '#'
+        printf "%-15s %s %-30s %s\n" "# Notes" ":" ""  '#'
+        printf "#***********************************************"
 
 }
 
 shebang_or_cheader()
 {
-	if [[ "$1" =~ .\.sh$ || "$1" =~ .\.py$ ]]
-	then
-		environment=$( [[ "$1" =~ .\.py$ ]] && echo python3 || echo bash )
-		echo -e "#!$(which env) $environment\n" >> $1
+        if [[ "$1" =~ .\.sh$ || "$1" =~ .\.py$ ]]
+        then
+                environment=$( [[ "$1" =~ .\.py$ ]] && echo python3 || echo bash )
+                echo -e "#!$(which env) $environment\n" >> $1
 
-	elif [[ "$1" =~ .\.cpp$ ]]
-	then
-		echo -e "#include <bits/stdc++.h>\n" >> $1
+        elif [[ "$1" =~ .\.cpp$ ]]
+        then
+                echo -e "#include <bits/stdc++.h>\n" >> $1
 
-	else
-		echo -e "#include <stdio.h>\n" >> $1
+        else
+                echo -e "#include <stdio.h>\n" >> $1
 
-	fi
+        fi
 }
 
 
@@ -58,26 +58,26 @@ set_author()
 
 file_exist()
 {
-	md5sum1=$(printf "%.33s" $(md5sum $1))
+        md5sum1=$(printf "%.33s" $(md5sum $1))
 
-	editor "$1"
+        editor "$1"
 
-	md5sum1=$(printf "%.33s" $(md5sum $1))
+        md5sum1=$(printf "%.33s" $(md5sum $1))
 
-	if [[ "$md5sum1" == "$md5sum2" ]]
-	then
-		#update_last_updated $1
-		echo file is updated
-	fi
+        if [[ "$md5sum1" == "$md5sum2" ]]
+        then
+                #update_last_updated $1
+                echo file is updated
+        fi
 }
 #init()
 
 help()
 {
-        echo -e "Usage : ${W}kode${off} [option] [file...]" 
-        echo -e " -h    --help      Print help" 
+        echo -e "Usage : ${W}kode${off} [option] [file...]"
+        echo -e " -h    --help      Print help"
         echo -e " -v    --version   Print version"
-        echo -e " -a    --author    Set author name" 
+        echo -e " -a    --author    Set author name"
 }
 
 version()
@@ -90,27 +90,27 @@ version()
 #echo -e "#*$(header $1)*#\n" >> $1
 
 while [[ -n "$1" ]]; do
-    case $1 in
-        "-h" | "--help" )
-                help ;;
+        case $1 in
+                "-h" | "--help" )
+                        help ;;
 
-        "-v" | "--version" )
-                version ;;
+                "-v" | "--version" )
+                        version ;;
 
-        "-a" | "--author" )
-               set_author ;;
+                "-a" | "--author" )
+                        set_author ;;
 
-        [!-]* )
-            [[ -f "$1" ]] && file_exist $1    ;; 
-            
+                [!-]* )
+                        [[ -f "$1" ]] && file_exist $1    ;;
+
 #            [[ $? -eq 0 && ! -n "$2" ]] && editor $1 ;;
 
-        * )
-            echo "$1 is Invalid Option"
-            echo "Try \"-h\" or \"--help\" for Help!"
-            echo
-    esac
-    shift
+* )
+        echo "$1 is Invalid Option"
+        echo "Try \"-h\" or \"--help\" for Help!"
+        echo
+esac
+shift
 done
 
 exit 0
