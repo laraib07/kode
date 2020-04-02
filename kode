@@ -22,16 +22,28 @@ printf "#***********************************************"
 
 }
 
-shebang()
+shebang_or_cheader()
 {
-        environment=$( [[ "$1" =~ .\.py$ ]] && echo python3 || echo bash )
-        echo "#!$(which env) $environment" > $1
+	if [[ "$1" =~ .\.sh$ || "$1" =~ .\.py$ ]]
+	then
+		environment=$( [[ "$1" =~ .\.py$ ]] && echo python3 || echo bash )
+		echo -e "#!$(which env) $environment\n" >> $1
+
+	elif [[ "$1" =~ .\.cpp$ ]]
+	then
+		echo -e "#include <bits/stdc++.h>\n" >> $1
+
+	else
+		echo -e "#include <stdio.h>\n" >> $1
+
+	fi
 }
 
 
 set_author()
 {
         if [[ ! -d $AUTHOR ]]
+
         then
                 mkdir -p $AUTHOR
                 touch $AUTHOR/author.name
@@ -44,7 +56,20 @@ set_author()
         echo -e "${G} >>${W} Author name $AUTHOR_NAME set successfully"
 }
 
-#file_exist()
+file_exist()
+{
+	md5sum1=$(printf "%.33s" $(md5sum $1))
+
+	editor "$1"
+
+	md5sum1=$(printf "%.33s" $(md5sum $1))
+
+	if [[ "$md5sum1" == "$md5sum2" ]]
+	then
+		#update_last_updated $1
+		echo file is updated
+	fi
+}
 #init()
 
 help()
@@ -61,8 +86,8 @@ version()
         echo "A bash script to add header in your codes"
 }
 
-echo -e "/*$(header $1)*/\n" >> $1
-echo -e "#*$(header $1)*#\n" >> $1
+#echo -e "/*$(header $1)*/\n" >> $1
+#echo -e "#*$(header $1)*#\n" >> $1
 
 while [[ -n "$1" ]]; do
     case $1 in
@@ -76,16 +101,16 @@ while [[ -n "$1" ]]; do
                set_author ;;
 
         [!-]* )
-            [[ -f "$1" ]] && file_exist $1     
+            [[ -f "$1" ]] && file_exist $1    ;; 
             
-            [[ $? -eq 0 && ! -n "$2" ]] && editor $1 ;;
+#            [[ $? -eq 0 && ! -n "$2" ]] && editor $1 ;;
 
         * )
-                echo
             echo "$1 is Invalid Option"
-            echo "Try \"-h\" or \"--h\" for Help!"
+            echo "Try \"-h\" or \"--help\" for Help!"
             echo
     esac
     shift
 done
 
+exit 0
