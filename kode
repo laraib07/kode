@@ -49,22 +49,29 @@ set_author()
                 touch $AUTHOR/author.name
         fi
 
-        echo -e "${R} >>${W} Enter author's name :${off} \c"
+        echo -e "${R} ≫${W} Enter author's name :${off} \c"
         read AUTHOR_NAME
 
         printf "%.30s" "$AUTHOR_NAME" > $AUTHOR/author.name
-        echo -e "${G} >>${W} Author name $AUTHOR_NAME set successfully"
+        echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully"
 }
+
+#update_last_modified()
+#{
+        
+        
+
+#}
 
 file_exist()
 {
-        md5sum1=$(printf "%.33s" $(md5sum $1))
+        md5sum1="$(printf "%.33s" $(md5sum $1))"
 
         editor "$1"
 
-        md5sum1=$(printf "%.33s" $(md5sum $1))
+        md5sum1="$(printf "%.33s" $(md5sum $1))"
 
-        if [[ "$md5sum1" == "$md5sum2" ]]
+        if [[ "$md5sum1" != "$md5sum2" ]]
         then
                 #update_last_updated $1
                 echo file is updated
@@ -82,7 +89,7 @@ help()
 
 version()
 {
-        echo "kode v0.4"
+        echo "kode v0.5.2"
         echo "A bash script to add header in your codes"
 }
 

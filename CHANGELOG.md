@@ -1,3 +1,6 @@
+## v0.5.2
+some minor improvement
+
 ## v0.5
 added more essential functions like
  * set author name
