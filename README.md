@@ -3,6 +3,9 @@
 A simple bash script to add an informative
 header at the beginning your codes.
 
+**Note** : currently it support c , c++ 
+python and bash.
+
 ## Screenshots
 
 ![preview1](https://raw.githubusercontent.com/laraib07/kode/master/preview1.png)
