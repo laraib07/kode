@@ -11,7 +11,7 @@
 #variable
 AUTHOR="Laraib"
 TXT_EDITOR=vim
-DEFULT_TXT_EDITOR="nano"
+DEFAULT_TXT_EDITOR="nano"
 
 #colors
 R='\033[1;31m'
