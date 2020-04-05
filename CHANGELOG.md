@@ -1,3 +1,6 @@
+## v1.0
+first complete build
+
 ## v0.5.2
 some minor improvement
 

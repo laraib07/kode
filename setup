@@ -1,0 +1,61 @@
+#!/bin/env bash
+
+#************************************************#
+#                                                #
+#   kode v1.0                                    #
+#   A bash script to add header in your code.    #
+#   Author : https://github.com/laraib07         #
+#                                                #
+#************************************************#
+
+#colors
+R='\033[1;31m'
+G='\033[1;32m'
+W='\033[1;37m'
+off='\033[0m'
+
+bin=/usr/bin
+
+set_author()
+{
+        echo -e "\n${R} ≫${W} Enter author's name :${off} \c"
+        read AUTHOR_NAME
+
+        AUTHOR_NAME=$(printf "%.30s" "$AUTHOR_NAME")
+        sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" $(which kode)
+        if [ $? -gt ]
+        echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully."
+}
+
+set_text_editor()
+{
+        false
+        while [ $? -gt 0 ]
+        do
+                clear
+                echo -e "\n${R} ≫${W} Enter text editor :${off} \c"
+                read 
+
+                which $REPLY > /dev/null
+                if [ $? -gt 0 ];then
+                        echo -e "${R} ≫ error${W} : $REPLY not found"
+                        echo -ne "   try again\r"
+                        sleep 4
+
+                else
+                        sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" $(which kode) 
+                        echo -e "${G} ≫${W} $REPLY set successfully."
+
+                fi
+                which $REPLY > /dev/null
+        done
+}
+
+wget && chmod u+x kode && mv $bin
+
+clear
+set_author
+echo
+set_text_editor
+
+exit 0

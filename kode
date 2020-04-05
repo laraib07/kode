@@ -1,6 +1,17 @@
 #!/bin/env bash
 
-AUTHOR="$PREFIX/share/kode"
+#************************************************#
+#                                                #
+#   kode v1.0                                    #
+#   A bash script to add header in your code.    #
+#   Author : https://github.com/laraib07         #
+#                                                #
+#************************************************#
+
+#variable
+AUTHOR="no_name"
+TXT_EDITOR=nano
+DEFULT_TXT_EDITOR="nano"
 
 #colors
 R='\033[1;31m'
@@ -12,29 +23,36 @@ t='        '
 
 header()
 {
-        printf "***********************************************#\n"
-        printf "%-15s %s %-30s %s\n" "# Project title" ':'  $1 '#'
-        printf "%-15s %s %-30s %s\n" "# Description" ':' "" '#'
-        printf "%-15s %s %-30s %s\n" "# Author" ':' "$(< $AUTHOR/author.name)" '#'
-        printf "%-15s %s %-30s %s\n" "# Last updated" ':'  "$(date  '+%a %d %b %y   %r')" '#'
-        printf "%-15s %s %-30s %s\n" "# Notes" ":" ""  '#'
-        printf "#***********************************************"
+        printf "************************************************#\n"
+        printf "#%-49s#\n" 
+        printf "%-16s %s %-30s %s\n" "#  Project title" ':'  $1 '#'
+        printf "%-16s %s %-30s %s\n" "#  Author" ':' "${AUTHOR}" '#'
+        printf "%-16s %s %-30s %s\n" "#  Date" ':'  "$(date  '+%a %d %b %y   %r')" '#'
+        printf "%-16s %s %-30s %s\n" "#  Last modified" ':'  "$(date  '+%a %d %b %y   %r')" '#'
+        printf "%-16s %s %-30s %s\n" "#  Notes" ":" ""  '#'
+        printf "%-16s %s %-30s %s\n" "#  Description" ':' "" '#'
+        printf "#%-49s#\n"
+        printf "#************************************************"
 
 }
 
 shebang_or_cheader()
 {
-        if [[ "$1" =~ .\.sh$ || "$1" =~ .\.py$ ]]
+        if [[ "$1" =~ \.sh$ || "$1" =~ \.py$ ]]
         then
                 environment=$( [[ "$1" =~ .\.py$ ]] && echo python3 || echo bash )
                 echo -e "#!$(which env) $environment\n" >> $1
+                echo -e "#*$(header $1)*#\n" >> $1
 
-        elif [[ "$1" =~ .\.cpp$ ]]
+        elif [[ "$1" =~ \.cpp$ ]]
         then
                 echo -e "#include <bits/stdc++.h>\n" >> $1
+                echo -e "/*$(header $1)*/\n" >> $1
 
-        else
+        elif [[ "$1" =~ \.c$ ]]
+        then
                 echo -e "#include <stdio.h>\n" >> $1
+                echo -e "/*$(header $1)*/\n" >> $1
 
         fi
 }
@@ -42,42 +60,77 @@ shebang_or_cheader()
 
 set_author()
 {
-        if [[ ! -d $AUTHOR ]]
-
-        then
-                mkdir -p $AUTHOR
-                touch $AUTHOR/author.name
-        fi
-
-        echo -e "${R} ≫${W} Enter author's name :${off} \c"
+        clear
+        echo -e "\n${R} ≫${W} Enter author's name :${off} \c"
         read AUTHOR_NAME
 
-        printf "%.30s" "$AUTHOR_NAME" > $AUTHOR/author.name
-        echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully"
+        AUTHOR_NAME=$(printf "%.30s" "$AUTHOR_NAME")
+        sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" ${0}
+        echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully."
 }
 
-#update_last_modified()
-#{
-        
-        
+set_text_editor()
+{
+        false
+        while [ $? -gt 0 ]
+        do
+                clear
+                echo -e "\n${R} ≫${W} Enter text editor :${off} \c"
+                read 
 
-#}
+                which $REPLY > /dev/null
+                if [ $? -gt 0 ];then
+                        echo -e "${R} ≫ error${W} : $REPLY not found" >&2
+                        echo -ne "   try again\r"
+                        sleep 2
+
+                else
+                        sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" ${0}
+                        echo -e "${G} ≫${W} $REPLY set successfully."
+
+                fi
+                which $REPLY > /dev/null
+        done
+}
+
+
+
+update_last_modified()
+{
+        replace_with=$(printf "%-16s %s %-30s %s\n" "#  Last modified" ':'  "$(date  '+%a %d %b %y   %r')" '#')
+        #update first occurrence of last modified 
+        sed -i "0,/^#  Last modified.*/{s//${replace_with}/}" ${1}
+}
 
 file_exist()
 {
         md5sum1="$(printf "%.33s" $(md5sum $1))"
 
-        editor "$1"
+        $TXT_EDITOR "$1"
 
-        md5sum1="$(printf "%.33s" $(md5sum $1))"
+        md5sum2="$(printf "%.33s" $(md5sum $1))"
 
         if [[ "$md5sum1" != "$md5sum2" ]]
         then
-                #update_last_updated $1
-                echo file is updated
+                update_last_modified $1
         fi
 }
-#init()
+
+new_file()
+{
+        touch "$1"
+        chmod u+x $1
+        shebang_or_cheader $1
+
+        md5sum1="$(printf "%.33s" $(md5sum $1))"
+        $TXT_EDITOR $1
+        md5sum2="$(printf "%.33s" $(md5sum $1))"
+
+        if [[ "$md5sum1" == "$md5sum2" ]]
+        then
+                rm -f  $1
+        fi
+}
 
 help()
 {
@@ -89,14 +142,22 @@ help()
 
 version()
 {
-        echo "kode v0.5.2"
+        echo "kode v1.0"
         echo "A bash script to add header in your codes"
+        echo "Author : https://github.com/laraib07"
 }
 
-#echo -e "/*$(header $1)*/\n" >> $1
-#echo -e "#*$(header $1)*#\n" >> $1
 
-while [[ -n "$1" ]]; do
+#checking if txt_editor is valid -> if not use default
+which ${TXT_EDITOR} > /dev/null
+if [ $? -gt 0 ]
+then
+        TXT_EDITOR="$DEFAULT_TXT_EDITOR"
+fi
+
+#driver code
+while [[ -n "$1" ]]
+do
         case $1 in
                 "-h" | "--help" )
                         help ;;
@@ -107,17 +168,21 @@ while [[ -n "$1" ]]; do
                 "-a" | "--author" )
                         set_author ;;
 
+                "-e" | "--editor" )
+                        set_text_editor ;;
+
                 [!-]* )
-                        [[ -f "$1" ]] && file_exist $1    ;;
+                        [[ -f "$1" ]] && file_exist $1
 
-#            [[ $? -eq 0 && ! -n "$2" ]] && editor $1 ;;
+                        ! [[ -f "$1" ]] && new_file  $1
+                        ;;
 
-* )
-        echo "$1 is Invalid Option"
-        echo "Try \"-h\" or \"--help\" for Help!"
-        echo
-esac
-shift
+                * )
+                        echo "$1 is Invalid Option" >&2
+                        echo "Try \"-h\" or \"--help\" for Help!"
+                        echo
+        esac
+        shift
 done
 
 exit 0
