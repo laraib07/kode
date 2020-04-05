@@ -31,7 +31,7 @@ set_author()
         read AUTHOR_NAME
 
         AUTHOR_NAME=$(printf "%.30s" "$AUTHOR_NAME")
-        sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" kode
+        sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" ~/.kode.config
 
         if [ $? -gt 0 ]
         then
@@ -65,11 +65,10 @@ set_text_editor()
 
 make_config()
 {
-        config="~/.kode.config"
-        touch $config
-        echo 'AUTHOR="no_name"' >> $config
-        echo 'TXT_EDITOR=nano' >> $config
-        echo 'DEFAULT_TXT_EDITOR="nano"' >> $config
+        touch ~/.kode.config
+        echo 'AUTHOR="no_name"'>> ~/.kode.config
+        echo 'TXT_EDITOR=nano' >> ~/.kode.config
+        echo 'DEFAULT_TXT_EDITOR="nano"' >>~/.kode.config
 
 }
 
