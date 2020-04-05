@@ -42,7 +42,6 @@ set_text_editor()
                 then
                         echo -e "${R} ≫ error${W} : $REPLY not found"
                         echo -ne "   try again\r"
-                        sleep 3
 
                 else
                         sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" kode 
