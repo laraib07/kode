@@ -14,7 +14,7 @@ G='\033[1;32m'
 W='\033[1;37m'
 off='\033[0m'
 
-bin=$PREFIX/bin
+bin=/usr/bin
 
 set_author()
 {
