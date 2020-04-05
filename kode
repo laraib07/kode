@@ -9,8 +9,8 @@
 #************************************************#
 
 #variable
-AUTHOR="no_name"
-TXT_EDITOR=nano
+AUTHOR="Laraib"
+TXT_EDITOR=vim
 DEFULT_TXT_EDITOR="nano"
 
 #colors
@@ -18,7 +18,6 @@ R='\033[1;31m'
 G='\033[1;32m'
 W='\033[1;37m'
 off='\033[0m'
-t='        '
 
 
 header()

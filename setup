@@ -14,7 +14,7 @@ G='\033[1;32m'
 W='\033[1;37m'
 off='\033[0m'
 
-bin=/usr/bin
+bin=$PREFIX/bin
 
 set_author()
 {
@@ -23,8 +23,11 @@ set_author()
 
         AUTHOR_NAME=$(printf "%.30s" "$AUTHOR_NAME")
         sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" $(which kode)
-        if [ $? -gt ]
-        echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully."
+
+        if [ $? -gt 0]
+        then
+                echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully."
+        fi
 }
 
 set_text_editor()
@@ -32,12 +35,12 @@ set_text_editor()
         false
         while [ $? -gt 0 ]
         do
-                clear
                 echo -e "\n${R} ≫${W} Enter text editor :${off} \c"
                 read 
 
                 which $REPLY > /dev/null
-                if [ $? -gt 0 ];then
+                if [ $? -gt 0 ]
+                then
                         echo -e "${R} ≫ error${W} : $REPLY not found"
                         echo -ne "   try again\r"
                         sleep 4
@@ -51,7 +54,7 @@ set_text_editor()
         done
 }
 
-wget && chmod u+x kode && mv $bin
+wget https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod u+x kode && mv $bin
 
 clear
 set_author
