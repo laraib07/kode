@@ -30,12 +30,7 @@ apt install wget
 wget https://raw.githubusercontent.com/laraib07/kode/master/setup && chmod u+x setup
 ```
 
-4.**[optional]**
-if you are using this script on termux.
-```bash
-sed -i "0,/^bin.*/{s//bin=\$PREFIX\/bin/}" setup
-```
-5.
+4.
 ```bash
 ./setup
 ```
@@ -43,3 +38,27 @@ or
 ```bash
 bash setup
 ```
+
+5. Move kode to bin folder.
+
+For termux
+```bash
+mv kode $PREFIX/bin
+```
+
+for linux desktop
+```bash
+sudo mv kode /usr/bin
+```
+
+**NOTE** : In linux distro , to change 
+author name or text editor ,you need root 
+privilege.
+In termux you dont need any root privilege.
+
+6. You no longer need setup.
+you can delete it with 
+```bash
+rm -f setup
+```
+

@@ -9,8 +9,8 @@
 #************************************************#
 
 #variable
-AUTHOR="Laraib"
-TXT_EDITOR=vim
+AUTHOR="no_name"
+TXT_EDITOR=nano
 DEFAULT_TXT_EDITOR="nano"
 
 #colors
@@ -26,8 +26,8 @@ header()
         printf "#%-49s#\n" 
         printf "%-16s %s %-30s %s\n" "#  Project title" ':'  $1 '#'
         printf "%-16s %s %-30s %s\n" "#  Author" ':' "${AUTHOR}" '#'
-        printf "%-16s %s %-30s %s\n" "#  Date" ':'  "$(date  '+%a %d %b %y   %r')" '#'
-        printf "%-16s %s %-30s %s\n" "#  Last modified" ':'  "$(date  '+%a %d %b %y   %r')" '#'
+        printf "%-16s %s %-30s %s\n" "#  Date" ':'  "$(date  '+%a %d %b %y  %R')" '#'
+        printf "%-16s %s %-30s %s\n" "#  Last modified" ':'  "$(date  '+%a %d %b %y  %R')" '#'
         printf "%-16s %s %-30s %s\n" "#  Notes" ":" ""  '#'
         printf "%-16s %s %-30s %s\n" "#  Description" ':' "" '#'
         printf "#%-49s#\n"
@@ -96,7 +96,7 @@ set_text_editor()
 
 update_last_modified()
 {
-        replace_with=$(printf "%-16s %s %-30s %s\n" "#  Last modified" ':'  "$(date  '+%a %d %b %y   %r')" '#')
+        replace_with=$(printf "%-16s %s %-30s %s\n" "#  Last modified" ':'  "$(date  '+%a %d %b %y  %R')" '#')
         #update first occurrence of last modified 
         sed -i "0,/^#  Last modified.*/{s//${replace_with}/}" ${1}
 }
