@@ -8,10 +8,7 @@
 #                                                #
 #************************************************#
 
-#variable
-AUTHOR="no_name"
-TXT_EDITOR=nano
-DEFAULT_TXT_EDITOR="nano"
+source ~/.kode.config
 
 #colors
 R='\033[1;31m'
@@ -23,7 +20,7 @@ off='\033[0m'
 header()
 {
         printf "************************************************#\n"
-        printf "#%-49s#\n" 
+        printf "#%-49s#\n"
         printf "%-16s %s %-30s %s\n" "#  Project title" ':'  $1 '#'
         printf "%-16s %s %-30s %s\n" "#  Author" ':' "${AUTHOR}" '#'
         printf "%-16s %s %-30s %s\n" "#  Date" ':'  "$(date  '+%a %d %b %y  %R')" '#'
@@ -64,7 +61,7 @@ set_author()
         read AUTHOR_NAME
 
         AUTHOR_NAME=$(printf "%.30s" "$AUTHOR_NAME")
-        sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" ${0}
+        sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" ~/.kode.config
         echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully."
 }
 
@@ -75,7 +72,7 @@ set_text_editor()
         do
                 clear
                 echo -e "\n${R} ≫${W} Enter text editor :${off} \c"
-                read 
+                read
 
                 which $REPLY > /dev/null
                 if [ $? -gt 0 ];then
@@ -84,7 +81,7 @@ set_text_editor()
                         sleep 2
 
                 else
-                        sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" ${0}
+                        sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" ~/.kode.config
                         echo -e "${G} ≫${W} $REPLY set successfully."
 
                 fi
@@ -97,7 +94,7 @@ set_text_editor()
 update_last_modified()
 {
         replace_with=$(printf "%-16s %s %-30s %s\n" "#  Last modified" ':'  "$(date  '+%a %d %b %y  %R')" '#')
-        #update first occurrence of last modified 
+        #update first occurrence of last modified
         sed -i "0,/^#  Last modified.*/{s//${replace_with}/}" ${1}
 }
 
@@ -109,7 +106,10 @@ file_exist()
 
         md5sum2="$(printf "%.33s" $(md5sum $1))"
 
-        if [[ "$md5sum1" != "$md5sum2" ]]
+        if [[ ${new} == "true" && "$md5sum1" == "$md5sum2" ]]
+        then
+                rm -f $1
+        elif [[ "$md5sum1" != "$md5sum2" ]]
         then
                 update_last_modified $1
         fi
@@ -121,14 +121,9 @@ new_file()
         chmod u+x $1
         shebang_or_cheader $1
 
-        md5sum1="$(printf "%.33s" $(md5sum $1))"
-        $TXT_EDITOR $1
-        md5sum2="$(printf "%.33s" $(md5sum $1))"
+        new="true"
+        file_exist $1
 
-        if [[ "$md5sum1" == "$md5sum2" ]]
-        then
-                rm -f  $1
-        fi
 }
 
 help()
@@ -148,11 +143,7 @@ version()
 
 
 #checking if txt_editor is valid -> if not use default
-which ${TXT_EDITOR} > /dev/null
-if [ $? -gt 0 ]
-then
-        TXT_EDITOR="$DEFAULT_TXT_EDITOR"
-fi
+which ${TXT_EDITOR} > /dev/null || TXT_EDITOR="$DEFAULT_TXT_EDITOR"
 
 #driver code
 while [[ -n "$1" ]]
@@ -171,9 +162,11 @@ do
                         set_text_editor ;;
 
                 [!-]* )
-                        [[ -f "$1" ]] && file_exist $1
-
-                        ! [[ -f "$1" ]] && new_file  $1
+                        if [[ -f "$1" ]]; then
+	  file_exist $1
+                        else
+	  new_file  $1
+                        fi
                         ;;
 
                 * )

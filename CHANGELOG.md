@@ -1,3 +1,5 @@
+## v1.2
+code optimized thanks to [MrAlpha786](https://github.com/MrAlpha786)
 ## v1.0
 first complete build
 

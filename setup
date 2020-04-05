@@ -14,6 +14,16 @@ G='\033[1;32m'
 W='\033[1;37m'
 off='\033[0m'
 
+banner()
+{
+        clear
+        echo -e ${R}
+        echo -e "  ████████████████████████"
+        echo -e "  █▄─█─▄█─▄▄─█▄─▄▄▀█▄─▄▄─█"
+        echo -e "  ██─▄▀██─██─██─██─██─▄█▀█"
+        echo -e "  ▀▄▄▀▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▄▄▀"
+        echo -e ${off}
+}
 
 set_author()
 {
@@ -35,7 +45,7 @@ set_text_editor()
         while [ $? -gt 0 ]
         do
                 echo -e "\n${R} ≫${W} Enter text editor :${off} \c"
-                read 
+                read
 
                 which $REPLY > /dev/null
                 if [ $? -gt 0 ]
@@ -44,7 +54,8 @@ set_text_editor()
                         echo -ne "   try again\r"
 
                 else
-                        sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" kode 
+                        sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" ~/.kode.config
+
                         echo -e "${G} ≫${W} $REPLY set successfully."
 
                 fi
@@ -52,9 +63,44 @@ set_text_editor()
         done
 }
 
-wget https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode
+make_config()
+{
+        config="~/.kode.config"
+        touch $config
+        echo 'AUTHOR="no_name"' >> $config
+        echo 'TXT_EDITOR=nano' >> $config
+        echo 'DEFAULT_TXT_EDITOR="nano"' >> $config
 
-clear
+}
+
+download_kode()
+{
+        
+        echo -e "\n${R} ≫${W} Download via :"
+        echo -e "    [c] curl"
+        echo -e "    [w] wget"
+        echo -e "\n${R} ≫${W} Enter choice(default : w) : \c"
+        read reply
+
+        [[ -z "$reply" ]] && reply=w
+
+        case $reply in
+                [cC])
+        
+                curl -O  https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode 
+                ;;
+
+                [wW])
+
+                wget https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode
+                ;;
+        esac
+}
+
+
+banner
+download_kode
+make_config
 set_author
 echo
 set_text_editor

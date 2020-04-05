@@ -29,6 +29,11 @@ apt install wget
 ```bash
 wget https://raw.githubusercontent.com/laraib07/kode/master/setup && chmod u+x setup
 ```
+or
+
+```bash
+curl -O https://raw.githubusercontent.com/laraib07/kode/master/setup && chmod u+x setup
+```
 
 4.
 ```bash
@@ -51,10 +56,6 @@ for linux desktop
 sudo mv kode /usr/bin
 ```
 
-**NOTE** : In linux distro , to change 
-author name or text editor ,you need root 
-privilege.
-In termux you dont need any root privilege.
 
 6. You no longer need setup.
 you can delete it with 
