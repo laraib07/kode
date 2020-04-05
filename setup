@@ -24,7 +24,7 @@ set_author()
         AUTHOR_NAME=$(printf "%.30s" "$AUTHOR_NAME")
         sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" $(which kode)
 
-        if [ $? -gt 0]
+        if [ $? -gt 0 ]
         then
                 echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully."
         fi
