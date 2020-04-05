@@ -3,6 +3,12 @@
 A simple bash script to add an informative
 header at the beginning your codes.
 
+## Screenshots
+
+![preview1](https://raw.githubusercontent.com/laraib07/kode/master/preview1.png)
+
+![preview2](https://raw.githubusercontent.com/laraib07/kode/master/preview2.png)
+
 ### created by [Laraib07](https://github.com/laraib07)
 
 ## Installation
