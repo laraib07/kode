@@ -8,7 +8,7 @@
 #                                                #
 #************************************************#
 
-source ~/.kode.config
+source ~/.kodeconfig
 
 #colors
 R='\033[1;31m'
@@ -61,7 +61,7 @@ set_author()
         read AUTHOR_NAME
 
         AUTHOR_NAME=$(printf "%.30s" "$AUTHOR_NAME")
-        sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" ~/.kode.config
+        sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" ~/.kodeconfig
         echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully."
 }
 
@@ -81,7 +81,7 @@ set_text_editor()
                         sleep 2
 
                 else
-                        sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" ~/.kode.config
+                        sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" ~/.kodeconfig
                         echo -e "${G} ≫${W} $REPLY set successfully."
 
                 fi
