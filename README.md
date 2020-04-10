@@ -3,8 +3,11 @@
 A simple bash script to add an informative
 header at the beginning your codes.
 
-**Note** : currently it support c , c++ 
-python and bash.
+**Supported languages :**
+bash, c, c++, c#, css, java,
+javascript, perl, php, python,
+ruby, rust, swift, typescript.
+
 
 ## Screenshots
 

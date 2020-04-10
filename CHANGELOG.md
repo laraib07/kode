@@ -1,3 +1,10 @@
+## v1.5
+added support for more languages.
+Now it supports :
+bash, c, c++, c#, css, java,
+javascript, perl, php, python,
+ruby, rust, swift, typescript.
+
 ## v1.2
 code optimized thanks to [MrAlpha786](https://github.com/MrAlpha786)
 ## v1.0
