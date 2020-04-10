@@ -63,7 +63,7 @@ set_text_editor()
         done
 }
 
-make_config()
+make_config_file()
 {
         touch ~/.kodeconfig
         echo 'AUTHOR="no_name"'>> ~/.kodeconfig
@@ -99,7 +99,7 @@ download_kode()
 
 banner
 download_kode
-make_config
+make_config_file
 set_author
 echo
 set_text_editor
