@@ -2,7 +2,7 @@
 
 #************************************************#
 #                                                #
-#   kode v1.5                                    #
+#   kode v2.0                                    #
 #   A bash script to add header in your code.    #
 #   Author : https://github.com/laraib07         #
 #                                                #
@@ -74,26 +74,16 @@ make_config_file()
 
 download_kode()
 {
-        
-        echo -e "\n${R} ≫${W} Download via :"
-        echo -e "    [c] curl"
-        echo -e "    [w] wget"
-        echo -e "\n${R} ≫${W} Enter choice(default : w) : \c"
-        read reply
+	which wget > /dev/null
+	if [ $? -gt 0 ]
+	then
+		wget https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode
 
-        [[ -z "$reply" ]] && reply=w
+	else
+		curl -O  https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode 
 
-        case $reply in
-                [cC])
-        
-                curl -O  https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode 
-                ;;
+	fi
 
-                [wW])
-
-                wget https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode
-                ;;
-        esac
 }
 
 signal()

@@ -1,4 +1,4 @@
-## v1.5
+## v2.0
 added support for more languages.
 Now it supports :
 bash, c, c++, c#, css, java,
