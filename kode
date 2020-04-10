@@ -17,7 +17,7 @@ W='\033[1;37m'
 off='\033[0m'
 
 
-header()
+insert_header()
 {
         printf "************************************************#\n"
         printf "#%-49s#\n"
@@ -32,25 +32,20 @@ header()
 
 }
 
-shebang_or_cheader()
+insert_shebang()
 {
         if [[ "$1" =~ \.sh$ || "$1" =~ \.py$ ]]
         then
                 environment=$( [[ "$1" =~ .\.py$ ]] && echo python3 || echo bash )
                 echo -e "#!$(which env) $environment\n" >> $1
-                echo -e "#*$(header $1)*#\n" >> $1
+                echo -e "#*$(insert_header $1)*#\n" >> $1
 
-        elif [[ "$1" =~ \.cpp$ ]]
+        elif [[ "$1" =~ \.cpp$ ||  "$1" =~ \.c$ ]]
         then
-                echo -e "#include <bits/stdc++.h>\n" >> $1
-                echo -e "/*$(header $1)*/\n" >> $1
+                echo -e "#include < >\n" >> $1
+                echo -e "/*$(insert_header $1)*/\n" >> $1
 
-        elif [[ "$1" =~ \.c$ ]]
-        then
-                echo -e "#include <stdio.h>\n" >> $1
-                echo -e "/*$(header $1)*/\n" >> $1
-
-        fi
+	fi
 }
 
 
@@ -98,7 +93,7 @@ update_last_modified()
         sed -i "0,/^#  Last modified.*/{s//${replace_with}/}" ${1}
 }
 
-file_exist()
+file_exists()
 {
         md5sum1="$(printf "%.33s" $(md5sum $1))"
 
@@ -115,14 +110,14 @@ file_exist()
         fi
 }
 
-new_file()
+is_new_file()
 {
         touch "$1"
         chmod u+x $1
-        shebang_or_cheader $1
+        insert_shebang $1
 
         new="true"
-        file_exist $1
+        file_exists $1
 
 }
 
@@ -137,7 +132,7 @@ help()
 version()
 {
         echo "kode v1.2"
-        echo "A bash script to add header in your codes"
+        echo "A bash script to add header in your codes."
         echo "Author : https://github.com/laraib07"
 }
 
@@ -163,9 +158,9 @@ do
 
                 [!-]* )
                         if [[ -f "$1" ]]; then
-	  file_exist $1
+				file_exists $1
                         else
-	  new_file  $1
+				is_new_file  $1
                         fi
                         ;;
 
