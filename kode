@@ -2,7 +2,7 @@
 
 #************************************************#
 #                                                #
-#   kode v1.5                                    #
+#   kode v2.2                                    #
 #   A bash script to add header in your code.    #
 #   Author : https://github.com/laraib07         #
 #                                                #
@@ -149,7 +149,7 @@ help()
 
 version()
 {
-        echo "kode v1.5"
+        echo "kode v2.2"
         echo "A bash script to add header and shebang in your codes."
         echo "Author : https://github.com/laraib07"
 	echo
