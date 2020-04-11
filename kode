@@ -2,7 +2,7 @@
 
 #************************************************#
 #                                                #
-#   kode v2.0                                    #
+#   kode v1.5                                    #
 #   A bash script to add header in your code.    #
 #   Author : https://github.com/laraib07         #
 #                                                #
@@ -33,14 +33,11 @@ header_template()
 
 }
 
-insert_shebang()
+insert_shebang_header()
 {
 	#checking if shebang required
-        if [[ "$1" =~ \.pl$ ]] || \
-	   [[ "$1" =~ \.py$ ]] || \
-	   [[ "$1" =~ \.rb$ ]] || \
-	   [[ "$1" =~ \.sh$ ]] 
-        then
+    if [[ "$1" =~ \.(pl|py|rb|sh)$ ]]
+      then
 		#checking environment
 		[[ "$1" =~ \.pl$ ]] && environment=perl
 		[[ "$1" =~ \.py$ ]] && environment=python3
@@ -52,32 +49,14 @@ insert_shebang()
                 echo -e "#!$(which env) $environment\n" >> $1
 		#appending header template
                 echo -e "#*$(header_template $1)*#\n" >> $1
-	else
-		#shebang not requied
-		#appending header template only
-		insert_header "$1"
-       	fi
-}
+    
+    elif [[ "$1" =~ \.(c|cpp|cs|css|java|js|php|rs|swift|ts)$ ]]
+      then
+      #shebang not requied
+      #appending header template only
+      echo -e "/*$(header_template $1)*/\n" >> $1
 
-insert_header()
-{
-	#checking language support
-	if [[ "$1" =~ \.c$ ]] || \
-	   [[ "$1" =~ \.cpp$ ]] || \
-	   [[ "$1" =~ \.cs$ ]] || \
-	   [[ "$1" =~ \.css$ ]] || \
-	   [[ "$1" =~ \.java$ ]] || \
-	   [[ "$1" =~ \.js$ ]] || \
-	   [[ "$1" =~ \.php$ ]] || \
-	   [[ "$1" =~ \.rs$ ]] || \
-	   [[ "$1" =~ \.swift$ ]] || \
-	   [[ "$1" =~ \.ts$ ]]
-        then
-		#appending header template
-                echo -e "/*$(header_template $1)*/\n" >> $1
-
-	fi
-
+    fi
 }
 
 
@@ -152,7 +131,7 @@ is_new_file()
         touch "$1"
         chmod u+x $1  #making file executable
 
-        insert_shebang $1 #inserting shebang
+        insert_shebang_header $1 #inserting shebang
 
         new="true"
         file_exists $1
@@ -170,7 +149,7 @@ help()
 
 version()
 {
-        echo "kode v2.0"
+        echo "kode v1.5"
         echo "A bash script to add header and shebang in your codes."
         echo "Author : https://github.com/laraib07"
 	echo

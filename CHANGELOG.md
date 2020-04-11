@@ -1,3 +1,6 @@
+## v2.2
+code optimized again thanks to [MrAlpha786](https://github.com/MrAlpha786)
+
 ## v2.0
 added support for more languages.
 Now it supports :
