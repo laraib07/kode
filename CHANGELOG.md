@@ -1,3 +1,7 @@
+## v3.0
+code improved and added check config file function.
+got rid of setup file.
+
 ## v2.2
 code optimized again thanks to [MrAlpha786](https://github.com/MrAlpha786)
 

@@ -2,13 +2,18 @@
 
 #************************************************#
 #                                                #
-#   kode v2.2                                    #
+#   kode v3.0                                    #
 #   A bash script to add header in your code.    #
+#                                                #
 #   Author : https://github.com/laraib07         #
+#                                                #
+#   Supported languages :                        #
+#   bash, c, c++, c#, css, java,                 #
+#   javascript, perl, php, python,               #
+#   ruby, rust, swift, typescript.               #
 #                                                #
 #************************************************#
 
-source ~/.kodeconfig
 
 #colors and variables
 R='\033[1;31m'
@@ -16,22 +21,42 @@ G='\033[1;32m'
 W='\033[1;37m'
 OFF='\033[0m'
 DATE=$(date '+%a %d %b %y  %R:%S')
+CONFIG_FILE="$HOME/.kodeconfig"
+
+
+check_config_file()
+{
+    if ! [[ -f $CONFIG_FILE ]]
+    then
+        touch $CONFIG_FILE
+        echo 'AUTHOR="Set name with -a"'> $CONFIG_FILE
+        echo 'TXT_EDITOR=nano' >> $CONFIG_FILE
+        echo 'DEFAULT_EDITOR="nano"' >> $CONFIG_FILE
+    fi
+}
+
+# checking config file
+check_config_file
+# sourcing config file
+source $CONFIG_FILE 
 
 
 header_template()
 {
+    FORMAT="%-16s %-30s %s\n"
     printf "************************************************#\n"
     printf "#%-49s#\n"
-    printf "%-16s %s %-30s %s\n" "#  Project title" ':'  $1 '#'
-    printf "%-16s %s %-30s %s\n" "#  Author" ':' "${AUTHOR}" '#'
-    printf "%-16s %s %-30s %s\n" "#  Date" ':'  "${DATE}" '#'
-    printf "%-16s %s %-30s %s\n" "#  Last modified" ':'  "${DATE}" '#'
-    printf "%-16s %s %-30s %s\n" "#  Notes" ":" ""  '#'
-    printf "%-16s %s %-30s %s\n" "#  Description" ':' "" '#'
+    printf "$FORMAT" "#  Project title :"  "$1" '#'
+    printf "$FORMAT" "#  Author        :"  "${AUTHOR}" '#'
+    printf "$FORMAT" "#  Date          :"  "${DATE}" '#'
+    printf "$FORMAT" "#  Last modified :"  "${DATE}" '#'
+    printf "$FORMAT" "#  Notes         :"  "" '#'
+    printf "$FORMAT" "#  Description   :"  "" '#'
     printf "#%-49s#\n"
     printf "#************************************************"
 
 }
+
 
 insert_shebang_header()
 {
@@ -61,6 +86,7 @@ insert_shebang_header()
 
 set_author()
 {
+    echo -e "\033[?47h\n"   # use alternate screen
     clear
     echo -e "\n${R} ≫${W} Enter author's name :${OFF} \c"
     read AUTHOR_NAME
@@ -68,44 +94,56 @@ set_author()
     AUTHOR_NAME=$(printf "%.30s" "$AUTHOR_NAME")
 
     #replacing author name in kodeconfig file
-    sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" ~/.kodeconfig
+    sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" $CONFIG_FILE
+
     echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully."
+    sleep 2
+    echo -e "\033[?47l\c"   # Restore normal screen
 }
+
 
 set_text_editor()
 {
-    false
-    while [ $? -gt 0 ]
-    do
-        clear
-        echo -e "\n${R} ≫${W} Enter text editor :${OFF} \c"
-        read
+    echo -e "\033[?47h\r"   # use alternate screen
+    clear
 
-        which $REPLY > /dev/null
-        if [ $? -gt 0 ];then
-            echo -e "${R} ≫ error${W} : $REPLY not found" >&2
-            echo -ne "   try again\r"
+    while true
+    do
+        echo -e "\n${R} ≫${W} Enter text editor :${OFF} \c"
+        read REPLY
+
+        which $REPLY &> /dev/null
+        if [ $? -eq 0 ]
+        then
+            #replacing editor in kodeconfig file
+            sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" $CONFIG_FILE
+
+            echo -e "${G} ≫${W} $REPLY set successfully."
             sleep 2
+            break
 
         else
-            #replacing editor in kodeconfig file
-            sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" ~/.kodeconfig
-            echo -e "${G} ≫${W} $REPLY set successfully."
+            echo -e "${R} ≫ Error${W} : $REPLY not found" >&2
+            echo -e "   Try again"
+            sleep 2
+            clear
 
         fi
-        which $REPLY > /dev/null
-    done
-}
 
+    done
+
+    echo -e "\033[?47l\c"   # Restore normal screen
+}
 
 
 update_last_modified()
 {
-    REPLACE_WITH=$(printf "%-16s %s %-30s %s\n" "#  Last modified" ':'  "${DATE}" '#')
+    REPLACE_WITH=$(printf "$FORMAT" "#  Last modified" ':'  "${DATE}" '#')
 
     #update first occurrence of last modified
     sed -i "0,/^#  Last modified.*/{s//${REPLACE_WITH}/}" ${1}
-    }
+}
+
 
 file_exists()
 {
@@ -115,27 +153,29 @@ file_exists()
 
     md5sum2="$(printf "%.33s" $(md5sum $1))"
 
-    if [[ ${new} == "true" && "$md5sum1" == "$md5sum2" ]]
+    if [[ $new == "true" && "$md5sum1" == "$md5sum2" ]]
     then
         rm -f $1
 
     elif [[ "$md5sum1" != "$md5sum2" ]]
     then
         update_last_modified $1
+
     fi
 }
+
 
 is_new_file()
 {
     touch "$1"
     chmod u+x $1  #making file executable
 
-    insert_shebang_header $1 #inserting shebang
+    insert_shebang_header $1 #inserting shebang and header
 
     new="true"
     file_exists $1
-
 }
+
 
 help()
 {
@@ -146,9 +186,10 @@ help()
     echo -e " -e    --editor    Set editor"
 }
 
+
 version()
 {
-    echo "kode v2.2"
+    echo "kode v3.0"
     echo "A bash script to add header and shebang in your codes."
     echo "Author : https://github.com/laraib07"
     echo
@@ -168,6 +209,7 @@ then
     echo "No argument provided."
     echo "Provide atleast one argument."
 fi
+
 
 #driver code
 while [[ -n "$1" ]]
