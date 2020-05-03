@@ -30,24 +30,15 @@ apt install wget
 
 3.
 ```bash
-wget https://raw.githubusercontent.com/laraib07/kode/master/setup && chmod u+x setup
+wget https://raw.githubusercontent.com/laraib07    /kode/master/kode && chmod 755 kode
 ```
 or
 
 ```bash
-curl -O https://raw.githubusercontent.com/laraib07/kode/master/setup && chmod u+x setup
+curl -O  https://raw.githubusercontent.com/lara    ib07/kode/master/kode && chmod 755 kode
 ```
 
-4.
-```bash
-./setup
-```
-or
-```bash
-bash setup
-```
-
-5. Move kode to bin folder.
+4. Move kode to bin folder.
 
 For termux
 ```bash
@@ -59,10 +50,9 @@ for linux desktop
 sudo mv kode /usr/bin
 ```
 
+5. To set author name and editor
+**Necessary**
 
-6. You no longer need setup.
-you can delete it with 
 ```bash
-rm -f setup
+kode -a -e
 ```
-
