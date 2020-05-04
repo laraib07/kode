@@ -35,12 +35,12 @@ apt install wget
 
 3.
 ```bash
-wget https://raw.githubusercontent.com/laraib07    /kode/master/kode && chmod 755 kode
+wget https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode
 ```
 or
 
 ```bash
-curl -O  https://raw.githubusercontent.com/lara    ib07/kode/master/kode && chmod 755 kode
+curl -O  https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode
 ```
 
 4. Move kode to bin folder.
