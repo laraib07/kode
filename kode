@@ -1,18 +1,22 @@
 #!/bin/env bash
 
-#************************************************#
-#                                                #
-#   kode v3.0                                    #
-#   A bash script to add header in your code.    #
-#                                                #
-#   Author : https://github.com/laraib07         #
-#                                                #
-#   Supported languages :                        #
-#   bash, c, c++, c#, css, java,                 #
-#   javascript, perl, php, python,               #
-#   ruby, rust, swift, typescript.               #
-#                                                #
-#************************************************#
+#**************************************************#
+#                                                  #
+#   kode v3.0                                      #
+#   A bash script to                               #
+#   -> Add shebang                                 #
+#   -> Add info header                             #
+#   -> Make code executable                        #
+#   -> Update Last updated column in info header   #
+#                                                  #
+#   Author : https://github.com/laraib07           #
+#                                                  #
+#   Supported languages :                          #
+#   bash, c, c++, c#, css, java,                   #
+#   javascript, perl, php, python,                 #
+#   ruby, rust, swift, typescript.                 #
+#                                                  #
+#**************************************************#
 
 
 #colors and variables
@@ -24,21 +28,21 @@ DATE=$(date '+%a %d %b %y  %R:%S')
 CONFIG_FILE="$HOME/.kodeconfig"
 
 
-check_config_file()
-{
-    if ! [[ -f $CONFIG_FILE ]]
-    then
-        touch $CONFIG_FILE
-        echo 'AUTHOR="Set name with -a"'> $CONFIG_FILE
-        echo 'TXT_EDITOR=nano' >> $CONFIG_FILE
-        echo 'DEFAULT_EDITOR="nano"' >> $CONFIG_FILE
-    fi
-}
-
 # checking config file
-check_config_file
+if ! [[ -f $CONFIG_FILE ]]
+then
+    touch $CONFIG_FILE
+    echo 'AUTHOR="Set name with -a"'> $CONFIG_FILE
+    echo 'TXT_EDITOR=nano' >> $CONFIG_FILE
+    echo 'DEFAULT_EDITOR="vi"' >> $CONFIG_FILE
+fi
+
 # sourcing config file
-source $CONFIG_FILE 
+source $CONFIG_FILE
+
+# checking if txt_editor is valid
+# if not use default editor
+which ${TXT_EDITOR} &> /dev/null || TXT_EDITOR="$DEFAULT_EDITOR"
 
 
 header_template()
@@ -60,24 +64,24 @@ header_template()
 
 insert_shebang_header()
 {
-    #checking if shebang required
+    # checking if shebang required
     if [[ "$1" =~ \.(pl|py|rb|sh)$ ]]
     then
-        #checking environment
+        # checking environment
         [[ "$1" =~ \.pl$ ]] && environment=perl
         [[ "$1" =~ \.py$ ]] && environment=python3
         [[ "$1" =~ \.rb$ ]] && environment=ruby
         [[ "$1" =~ \.sh$ ]] && environment=bash
 
-        #appending shebang
+        # appending shebang
         echo -e "#!$(which env) $environment\n" >> $1
-        #appending header template
+        # appending header template
         echo -e "#*$(header_template $1)*#\n" >> $1
 
     elif [[ "$1" =~ \.(c|cpp|cs|css|java|js|php|rs|swift|ts)$ ]]
     then
-        #shebang not requied
-        #appending header template only
+        # shebang not requied
+        # appending header template only
         echo -e "/*$(header_template $1)*/\n" >> $1
 
     fi
@@ -93,7 +97,7 @@ set_author()
 
     AUTHOR_NAME=$(printf "%.30s" "$AUTHOR_NAME")
 
-    #replacing author name in kodeconfig file
+    # replacing author name in kodeconfig file
     sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" $CONFIG_FILE
 
     echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully."
@@ -115,7 +119,7 @@ set_text_editor()
         which $REPLY &> /dev/null
         if [ $? -eq 0 ]
         then
-            #replacing editor in kodeconfig file
+            # replacing editor in kodeconfig file
             sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" $CONFIG_FILE
 
             echo -e "${G} ≫${W} $REPLY set successfully."
@@ -140,7 +144,7 @@ update_last_modified()
 {
     REPLACE_WITH=$(printf "$FORMAT" "#  Last modified" ':'  "${DATE}" '#')
 
-    #update first occurrence of last modified
+    # update first occurrence of last modified
     sed -i "0,/^#  Last modified.*/{s//${REPLACE_WITH}/}" ${1}
 }
 
@@ -168,9 +172,9 @@ file_exists()
 is_new_file()
 {
     touch "$1"
-    chmod u+x $1  #making file executable
+    chmod u+x $1  # making file executable
 
-    insert_shebang_header $1 #inserting shebang and header
+    insert_shebang_header $1 # inserting shebang and header
 
     new="true"
     file_exists $1
@@ -190,7 +194,12 @@ help()
 version()
 {
     echo "kode v3.0"
-    echo "A bash script to add header and shebang in your codes."
+    echo "A bash script to"
+    echo "-> Add shebang"
+    echo "-> Add info header"
+    echo "-> Make code executable"
+    echo "-> Update Last updated column in info header"
+    echo
     echo "Author : https://github.com/laraib07"
     echo
     echo "Supported languages : "
@@ -200,10 +209,7 @@ version()
 }
 
 
-#checking if txt_editor is valid -> if not use default
-which ${TXT_EDITOR} > /dev/null || TXT_EDITOR="$DEFAULT_TXT_EDITOR"
-
-#if no argument provided
+# if no argument provided
 if [[ -z "$1" ]]
 then
     echo "No argument provided."
@@ -211,7 +217,7 @@ then
 fi
 
 
-#driver code
+# Driver Code
 while [[ -n "$1" ]]
 do
     case $1 in
