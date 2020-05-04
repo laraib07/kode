@@ -1,7 +1,12 @@
 # kode
 
-A simple bash script to add an informative
-header at the beginning your codes.
+A simple bash script to 
+
+* add a shebang (if required)
+* add an informative header 
+* make file executable
+* update last updated column
+
 
 **Supported languages :**
 bash, c, c++, c#, css, java,
