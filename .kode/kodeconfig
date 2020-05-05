@@ -1,0 +1,3 @@
+AUTHOR="Set name with -a"
+TXT_EDITOR=vim
+DEFAULT_EDITOR="vi"
