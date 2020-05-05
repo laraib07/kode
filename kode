@@ -31,9 +31,10 @@ CODE_TEMPLATE="$HOME/.kode"
 CONFIG_FILE="$HOME/.kode/kodeconfig"
 
 
-# checking config file
+# checking config file [ FAILSAFE ]
 if ! [[ -f $CONFIG_FILE ]]
 then
+    mkdir $HOME/.kode &> /dev/null
     touch $CONFIG_FILE
     echo 'AUTHOR="Set name with -a"'> $CONFIG_FILE
     echo 'TXT_EDITOR=nano' >> $CONFIG_FILE
@@ -83,7 +84,6 @@ insert_code_template()
 
         *.rs )
             cat $CODE_TEMPLATE/rs.temp >> ${1} ;;
-
     esac
 }
 
@@ -115,9 +115,7 @@ insert_shebang_header()
         if [[ $INSERT_CODE == "true" ]]
         then
             insert_code_template $1
-
         fi
-
     fi
 }
 
@@ -165,9 +163,7 @@ set_text_editor()
             echo -e "   Try again"
             sleep 2
             clear
-
         fi
-
     done
 
     echo -e "\033[?47l\c"   # Restore normal screen
@@ -195,7 +191,6 @@ toggle_code_insertion()
     then
         sed -i "s/false/true/g" $CONFIG_FILE
         echo -e "${G} ≫${W} Code insertion ${G}Enabled."
-
     fi
 }
 
@@ -215,7 +210,6 @@ file_exists()
     elif [[ "$md5sum1" != "$md5sum2" ]]
     then
         update_last_modified $1
-
     fi
 }
 
@@ -300,7 +294,6 @@ do
             echo "$1 is Invalid Option" >&2
             echo "Try \"-h\" or \"--help\" for Help!"
             ;;
-
     esac
     shift
 done
