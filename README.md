@@ -3,7 +3,7 @@
 A simple bash script to 
 
 * Add a shebang (if required)
-* Add an informative header
+* Add an info header
 * Add code template (can be toggled) 
 * Make file executable
 * Update last updated column
