@@ -84,8 +84,8 @@ insert_code_template()
         *.rs )
             cat $CODE_TEMPLATE/rs.temp >> ${1} ;;
 
-        esac
-    }
+    esac
+}
 
 
 insert_shebang_header()
@@ -297,9 +297,10 @@ do
         * )
             echo "$1 is Invalid Option" >&2
             echo "Try \"-h\" or \"--help\" for Help!"
+            ;;
 
-        esac
-        shift
-    done
+    esac
+    shift
+done
 
-    exit 0
+exit 0
