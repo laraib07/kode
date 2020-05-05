@@ -14,6 +14,8 @@ bash, c, c++, c#, css, java,
 javascript, perl, php, python,
 ruby, rust, swift, typescript.
 
+![preview.gif](https://raw.githubusercontent.com/laraib07/kode/master/preview/preview.gif)
+
 
 ### created by [Laraib07](https://github.com/laraib07)
 
@@ -25,20 +27,21 @@ apt update && apt upgrade -y
 
 2.
 ```bash
-apt install wget
+apt install git
 ```
 
-3.
+3.Clone this repo.
 ```bash
-wget https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode
+git clone https://github.com/laraib07/kode.git
 ```
-or
+
+4. Give kode necessary permission.
 
 ```bash
-curl -O  https://raw.githubusercontent.com/laraib07/kode/master/kode && chmod 755 kode
+chmod 755 kode
 ```
 
-4. Move kode to bin folder.
+5. Move kode to bin folder.
 
 For termux
 ```bash
@@ -50,16 +53,28 @@ for linux desktop
 sudo mv kode /usr/bin
 ```
 
-5. To set author name and editor
+6. Move .kode folder to home.
+```bash
+mv .kode $HOME
+```
+
+7. To set author name and editor
+
 **Necessary**
 
 ```bash
 kode -a -e
-`
+```
+
+8. You can get rid of kode repo now.
+
+```bash
+rm -rf kode
+```
+
 ## Screenshots
 
-![preview1](https://raw.githubusercontent.com/laraib07/kode/master/preview1.png)
+![preview1](https://raw.githubusercontent.com/laraib07/kode/master/preview/preview1.png)
 
-![preview2](https://raw.githubusercontent.com/laraib07/kode/master/preview2.png)
+![preview2](https://raw.githubusercontent.com/laraib07/kode/master/preview/preview2.png)
 
-``
