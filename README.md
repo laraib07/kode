@@ -14,7 +14,6 @@ bash, c, c++, c#, css, java,
 javascript, perl, php, python,
 ruby, rust, swift, typescript.
 
-![preview.gif](https://raw.githubusercontent.com/laraib07/kode/master/preview/preview.gif)
 ![preview.gif](https://raw.githubusercontent.com/laraib07/kode/master/preview/preview2.gif)
 
 ### created by [Laraib07](https://github.com/laraib07)
