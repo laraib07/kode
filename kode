@@ -94,10 +94,12 @@ insert_shebang_header()
     if [[ "$1" =~ \.(pl|py|rb|sh)$ ]]
     then
         # checking environment
-        [[ "$1" =~ \.pl$ ]] && environment=perl
-        [[ "$1" =~ \.py$ ]] && environment=python3
-        [[ "$1" =~ \.rb$ ]] && environment=ruby
-        [[ "$1" =~ \.sh$ ]] && environment=bash
+        case ${1} in
+            *.pl ) environment=perl ;;
+            *.py ) environment=python3 ;;
+            *.rb ) environment=ruby ;;
+            *.sh ) environment=bash ;;
+        esac
 
         # appending shebang
         echo -e "#!$(which env) $environment\n" >> $1
