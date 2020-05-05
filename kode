@@ -2,10 +2,11 @@
 
 #**************************************************#
 #                                                  #
-#   kode v3.0                                      #
+#   kode v4.0                                      #
 #   A bash script to                               #
 #   -> Add shebang                                 #
 #   -> Add info header                             #
+#   -> Add code template (can be toggled)          #
 #   -> Make code executable                        #
 #   -> Update Last updated column in info header   #
 #                                                  #
@@ -25,7 +26,9 @@ G='\033[1;32m'
 W='\033[1;37m'
 OFF='\033[0m'
 DATE=$(date '+%a %d %b %y  %R:%S')
-CONFIG_FILE="$HOME/.kodeconfig"
+FORMAT="%-16s %-30s %s\n"
+CODE_TEMPLATE="$HOME/.kode"
+CONFIG_FILE="$HOME/.kode/kodeconfig"
 
 
 # checking config file
@@ -35,6 +38,7 @@ then
     echo 'AUTHOR="Set name with -a"'> $CONFIG_FILE
     echo 'TXT_EDITOR=nano' >> $CONFIG_FILE
     echo 'DEFAULT_EDITOR="vi"' >> $CONFIG_FILE
+    echo 'INSERT_CODE=true' >> $CONFIG_FILE
 fi
 
 # sourcing config file
@@ -47,7 +51,6 @@ which ${TXT_EDITOR} &> /dev/null || TXT_EDITOR="$DEFAULT_EDITOR"
 
 header_template()
 {
-    FORMAT="%-16s %-30s %s\n"
     printf "************************************************#\n"
     printf "#%-49s#\n"
     printf "$FORMAT" "#  Project title :"  "$1" '#'
@@ -61,6 +64,32 @@ header_template()
 
 }
 
+
+insert_code_template()
+{
+
+    if [[ "$1" =~ \.c$ ]]
+    then
+        cat $CODE_TEMPLATE/c.temp >> ${1}
+
+    elif [[ "$1" =~ \.cpp$ ]]
+    then
+        cat $CODE_TEMPLATE/cpp.temp >> ${1}
+
+    elif [[ "$1" =~ \.cs$ ]]
+    then
+        cat $CODE_TEMPLATE/cs.temp >> ${1}
+
+    elif [[ "$1" =~ \.java$ ]]
+    then
+        cat $CODE_TEMPLATE/java.temp >> ${1}
+
+    elif [[ "$1" =~ \.rs$ ]]
+    then
+        cat $CODE_TEMPLATE/rs.temp >> ${1}
+
+    fi
+}
 
 insert_shebang_header()
 {
@@ -83,6 +112,10 @@ insert_shebang_header()
         # shebang not requied
         # appending header template only
         echo -e "/*$(header_template $1)*/\n" >> $1
+        if [[ $INSERT_CODE == "true" ]]
+        then
+            insert_code_template $1
+        fi
 
     fi
 }
@@ -142,10 +175,27 @@ set_text_editor()
 
 update_last_modified()
 {
-    REPLACE_WITH=$(printf "$FORMAT" "#  Last modified" ':'  "${DATE}" '#')
+    REPLACE_WITH=$(printf "$FORMAT"  "#  Last modified :" "${DATE}" '#')
 
     # update first occurrence of last modified
     sed -i "0,/^#  Last modified.*/{s//${REPLACE_WITH}/}" ${1}
+}
+
+
+toggle_code_insertion()
+{
+    # if INSERT_CODE is true then assign it false
+    if [[ $INSERT_CODE == "true" ]]
+    then
+        sed -i "s/true/false/g" $CONFIG_FILE
+        echo -e "${R} ≫${W} Code insertion ${R}Disabled."
+
+    elif [[ $INSERT_CODE == "false" ]]
+    then
+        sed -i "s/false/true/g" $CONFIG_FILE
+        echo -e "${G} ≫${W} Code insertion ${G}Enabled."
+
+    fi
 }
 
 
@@ -157,7 +207,7 @@ file_exists()
 
     md5sum2="$(printf "%.33s" $(md5sum $1))"
 
-    if [[ $new == "true" && "$md5sum1" == "$md5sum2" ]]
+    if [[ $new == "true"  && "$md5sum1" == "$md5sum2" ]]
     then
         rm -f $1
 
@@ -176,7 +226,7 @@ is_new_file()
 
     insert_shebang_header $1 # inserting shebang and header
 
-    new="true"
+    new=true
     file_exists $1
 }
 
@@ -184,28 +234,29 @@ is_new_file()
 help()
 {
     echo -e "Usage : ${W}kode${OFF} [option] [file...]"
-    echo -e " -h    --help      Print help"
-    echo -e " -v    --version   Print version"
-    echo -e " -a    --author    Set author name"
-    echo -e " -e    --editor    Set editor"
+    echo -e " -h    --help                     Print help"
+    echo -e " -v    --version                  Print version"
+    echo -e " -a    --set-author               Set author name"
+    echo -e " -e    --set-editor               Set editor"
+    echo -e " -t    --toggle-code-insertion    toggle code insertion"
 }
 
 
 version()
 {
-    echo "kode v3.0"
+    echo "kode v4.0"
     echo "A bash script to"
-    echo "-> Add shebang"
-    echo "-> Add info header"
-    echo "-> Make code executable"
-    echo "-> Update Last updated column in info header"
+    echo " -> Add shebang"
+    echo " -> Add info header"
+    echo " -> Add code template (can be toggled)"
+    echo " -> Make code executable"
+    echo " -> Update Last updated column in info header"
     echo
     echo "Author : https://github.com/laraib07"
     echo
     echo "Supported languages : "
-    echo "bash, c, c++, c#, css, java, "
-    echo "javascript, perl, php, python, "
-    echo "ruby, rust, swift, typescript."
+    echo "bash, c, c++, c#, css, java, javascript, perl,"
+    echo "php, python, ruby, rust, swift, typescript."
 }
 
 
@@ -227,11 +278,14 @@ do
         "-v" | "--version" )
             version ;;
 
-        "-a" | "--author" )
+        "-a" | "--set-author" )
             set_author ;;
 
-        "-e" | "--editor" )
+        "-e" | "--set-editor" )
             set_text_editor ;;
+
+        "-t" | "--toggle-code-insertion" )
+            toggle_code_insertion ;;
 
         [!-]* )
             if [[ -f "$1" ]]; then
@@ -244,7 +298,7 @@ do
         * )
             echo "$1 is Invalid Option" >&2
             echo "Try \"-h\" or \"--help\" for Help!"
-            echo
+
     esac
     shift
 done
