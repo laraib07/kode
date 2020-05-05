@@ -1,5 +1,6 @@
 ## v4.0
 Added option to add necessary code template.
+Only needed in c, cpp, c#, java, rust. 
 (can be toggled) 
 
 ## v3.0
