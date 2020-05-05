@@ -2,13 +2,13 @@
 
 #**************************************************#
 #                                                  #
-#   kode v4.0                                      #
+#   kode v4.1                                      #
 #   A bash script to                               #
 #   -> Add shebang                                 #
 #   -> Add info header                             #
 #   -> Add code template (can be toggled)          #
 #   -> Make code executable                        #
-#   -> Update Last updated column in info header   #
+#   -> Update Last modified column of info header  #
 #                                                  #
 #   Author : https://github.com/laraib07           #
 #                                                  #
@@ -67,29 +67,26 @@ header_template()
 
 insert_code_template()
 {
+    # inserting code template
+    case ${1} in
+        *.c )
+            cat $CODE_TEMPLATE/c.temp >> ${1} ;;
 
-    if [[ "$1" =~ \.c$ ]]
-    then
-        cat $CODE_TEMPLATE/c.temp >> ${1}
+        *.cpp )
+            cat $CODE_TEMPLATE/cpp.temp >> ${1} ;;
 
-    elif [[ "$1" =~ \.cpp$ ]]
-    then
-        cat $CODE_TEMPLATE/cpp.temp >> ${1}
+        *.cs )
+            cat $CODE_TEMPLATE/cs.temp >> ${1} ;;
 
-    elif [[ "$1" =~ \.cs$ ]]
-    then
-        cat $CODE_TEMPLATE/cs.temp >> ${1}
+        *.java )
+            cat $CODE_TEMPLATE/java.temp >> ${1} ;;
 
-    elif [[ "$1" =~ \.java$ ]]
-    then
-        cat $CODE_TEMPLATE/java.temp >> ${1}
+        *.rs )
+            cat $CODE_TEMPLATE/rs.temp >> ${1} ;;
 
-    elif [[ "$1" =~ \.rs$ ]]
-    then
-        cat $CODE_TEMPLATE/rs.temp >> ${1}
+        esac
+    }
 
-    fi
-}
 
 insert_shebang_header()
 {
@@ -112,9 +109,11 @@ insert_shebang_header()
         # shebang not requied
         # appending header template only
         echo -e "/*$(header_template $1)*/\n" >> $1
+
         if [[ $INSERT_CODE == "true" ]]
         then
             insert_code_template $1
+
         fi
 
     fi
@@ -244,13 +243,13 @@ help()
 
 version()
 {
-    echo "kode v4.0"
+    echo "kode v4.1"
     echo "A bash script to"
     echo " -> Add shebang"
     echo " -> Add info header"
     echo " -> Add code template (can be toggled)"
     echo " -> Make code executable"
-    echo " -> Update Last updated column in info header"
+    echo " -> Update Last modified column in info header"
     echo
     echo "Author : https://github.com/laraib07"
     echo
@@ -299,8 +298,8 @@ do
             echo "$1 is Invalid Option" >&2
             echo "Try \"-h\" or \"--help\" for Help!"
 
-    esac
-    shift
-done
+        esac
+        shift
+    done
 
-exit 0
+    exit 0

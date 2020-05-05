@@ -6,7 +6,7 @@ A simple bash script to
 * Add an info header
 * Add code template (can be toggled) 
 * Make file executable
-* Update last updated column
+* Update last modified column of info header
 
 
 **Supported languages :**
