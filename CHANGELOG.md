@@ -1,3 +1,7 @@
+## v4.0
+Added option to add necessary code template.
+(can be toggled) 
+
 ## v3.0
 code improved and added check config file function.
 got rid of setup file.
