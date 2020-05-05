@@ -30,7 +30,7 @@ apt update && apt upgrade -y
 apt install git
 ```
 
-3.Clone this repo.
+3. Clone this repo.
 ```bash
 git clone https://github.com/laraib07/kode.git
 ```
