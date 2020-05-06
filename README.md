@@ -44,17 +44,17 @@ chmod 755 kode
 
 For termux
 ```bash
-ln -s kode $PREFIX/bin/kode
+ln -s $PWD/kode $PREFIX/bin/kode
 ```
 
 for linux desktop
 ```bash
-sudo ln -s kode /usr/bin/kode
+sudo ln -s $PWD/kode /usr/bin/kode
 ```
 
-6. Copy .kode folder to home.
+6. Create a symlink of .kode folder to home.
 ```bash
-cp -r .kode $HOME
+ln -s $PWD/.kode $HOME/.kode
 ```
 
 7. To set author name 
