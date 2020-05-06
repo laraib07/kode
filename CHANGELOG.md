@@ -1,3 +1,7 @@
+## v4.5
+* Got rid of set_author and set_editor functions.
+* Some minor improvement.
+
 ## v4.1
 code improved
 
@@ -10,7 +14,7 @@ Only needed in c, cpp, c#, java, rust.
 code improved and added check config file function.
 got rid of setup file.
 
-## v2.2
+## v2.1
 code optimized again thanks to [MrAlpha786](https://github.com/MrAlpha786)
 
 ## v2.0

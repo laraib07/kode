@@ -32,22 +32,17 @@ CONFIG_FILE="$HOME/.kode/kodeconfig"
 
 
 # checking config file [ FAILSAFE ]
-if ! [[ -f $CONFIG_FILE ]]
+if ! [[ -f "$CONFIG_FILE" ]]
 then
-    mkdir $HOME/.kode &> /dev/null
-    touch $CONFIG_FILE
-    echo 'AUTHOR="Set name with -a"'> $CONFIG_FILE
-    echo 'TXT_EDITOR=nano' >> $CONFIG_FILE
-    echo 'DEFAULT_EDITOR="vi"' >> $CONFIG_FILE
-    echo 'INSERT_CODE=true' >> $CONFIG_FILE
+    mkdir "$HOME"/.kode &> /dev/null
+    touch "$CONFIG_FILE"
+    printf "AUTHOR=\"Set name with -a\"\n" > "$CONFIG_FILE"
+    printf "TXT_EDITOR=\${VISUAL:-\"\${EDITOR:-vi}\"}\n" >> "$CONFIG_FILE"
+    printf "INSERT_CODE=true\n" >> "$CONFIG_FILE"
 fi
 
 # sourcing config file
-source $CONFIG_FILE
-
-# checking if txt_editor is valid
-# if not use default editor
-which ${TXT_EDITOR} &> /dev/null || TXT_EDITOR="$DEFAULT_EDITOR"
+source "$CONFIG_FILE"
 
 
 header_template()
@@ -69,21 +64,21 @@ header_template()
 insert_code_template()
 {
     # inserting code template
-    case ${1} in
+    case "$1" in
         *.c )
-            cat $CODE_TEMPLATE/c.temp >> ${1} ;;
+            cat "$CODE_TEMPLATE"/c.temp >> "$1" ;;
 
         *.cpp )
-            cat $CODE_TEMPLATE/cpp.temp >> ${1} ;;
+            cat "$CODE_TEMPLATE"/cpp.temp >> "$1" ;;
 
         *.cs )
-            cat $CODE_TEMPLATE/cs.temp >> ${1} ;;
+            cat "$CODE_TEMPLATE"/cs.temp >> "$1" ;;
 
         *.java )
-            cat $CODE_TEMPLATE/java.temp >> ${1} ;;
+            cat "$CODE_TEMPLATE"/java.temp >> "$1" ;;
 
         *.rs )
-            cat $CODE_TEMPLATE/rs.temp >> ${1} ;;
+            cat "$CODE_TEMPLATE"/rs.temp >> "$1" ;;
     esac
 }
 
@@ -94,7 +89,7 @@ insert_shebang_header()
     if [[ "$1" =~ \.(pl|py|rb|sh)$ ]]
     then
         # checking environment
-        case ${1} in
+        case "$1" in
             *.pl ) environment=perl ;;
             *.py ) environment=python3 ;;
             *.rb ) environment=ruby ;;
@@ -102,114 +97,64 @@ insert_shebang_header()
         esac
 
         # appending shebang
-        echo -e "#!$(which env) $environment\n" >> $1
+        printf "#!$(which env) "$environment"\n\n" >> "$1"
         # appending header template
-        echo -e "#*$(header_template $1)*#\n" >> $1
+        printf "#*$(header_template "$1")*#\n\n" >> "$1"
 
     elif [[ "$1" =~ \.(c|cpp|cs|css|java|js|php|rs|swift|ts)$ ]]
     then
         # shebang not requied
         # appending header template only
-        echo -e "/*$(header_template $1)*/\n" >> $1
+        printf "/*$(header_template "$1")*/\n\n" >> "$1"
 
-        if [[ $INSERT_CODE == "true" ]]
+        if [[ "$INSERT_CODE" == "true" ]]
         then
-            insert_code_template $1
+            insert_code_template "$1"
         fi
     fi
 }
 
 
-set_author()
-{
-    echo -e "\033[?47h\n"   # use alternate screen
-    clear
-    echo -e "\n${R} ≫${W} Enter author's name :${OFF} \c"
-    read AUTHOR_NAME
-
-    AUTHOR_NAME=$(printf "%.30s" "$AUTHOR_NAME")
-
-    # replacing author name in kodeconfig file
-    sed -i "0,/^AUTHOR.*/{s//AUTHOR=\"${AUTHOR_NAME}\"/}" $CONFIG_FILE
-
-    echo -e "${G} ≫${W} Author name $AUTHOR_NAME set successfully."
-    sleep 2
-    echo -e "\033[?47l\c"   # Restore normal screen
-}
-
-
-set_text_editor()
-{
-    echo -e "\033[?47h\r"   # use alternate screen
-    clear
-
-    while true
-    do
-        echo -e "\n${R} ≫${W} Enter text editor :${OFF} \c"
-        read REPLY
-
-        which $REPLY &> /dev/null
-        if [ $? -eq 0 ]
-        then
-            # replacing editor in kodeconfig file
-            sed -i "0,/^TXT_EDITOR.*/{s//TXT_EDITOR=${REPLY}/}" $CONFIG_FILE
-
-            echo -e "${G} ≫${W} $REPLY set successfully."
-            sleep 2
-            break
-
-        else
-            echo -e "${R} ≫ Error${W} : $REPLY not found" >&2
-            echo -e "   Try again"
-            sleep 2
-            clear
-        fi
-    done
-
-    echo -e "\033[?47l\c"   # Restore normal screen
-}
-
-
 update_last_modified()
 {
-    REPLACE_WITH=$(printf "$FORMAT"  "#  Last modified :" "${DATE}" '#')
+    replace_with=$(printf "$FORMAT"  "#  Last modified :" "${DATE}" '#')
 
     # update first occurrence of last modified
-    sed -i "0,/^#  Last modified.*/{s//${REPLACE_WITH}/}" ${1}
+    sed -i "0,/^#  Last modified.*/{s//${replace_with}/}" "$1"
 }
 
 
 toggle_code_insertion()
 {
     # if INSERT_CODE is true then assign it false
-    if [[ $INSERT_CODE == "true" ]]
+    if [[ "$INSERT_CODE" == "true" ]]
     then
-        sed -i "s/true/false/g" $CONFIG_FILE
-        echo -e "${R} ≫${W} Code insertion ${R}Disabled."
+        sed -i "s/true/false/g" "$CONFIG_FILE"
+        printf  "code insertion ${R}disabled.\n"
 
-    elif [[ $INSERT_CODE == "false" ]]
+    elif [[ "$INSERT_CODE" == "false" ]]
     then
-        sed -i "s/false/true/g" $CONFIG_FILE
-        echo -e "${G} ≫${W} Code insertion ${G}Enabled."
+        sed -i "s/false/true/g" "$CONFIG_FILE"
+        printf  "code insertion ${G}enabled.\n"
     fi
 }
 
 
 file_exists()
 {
-    md5sum1="$(printf "%.33s" $(md5sum $1))"
+    md5sum1="$(printf "%.33s" $(md5sum "$1"))"
 
-    $TXT_EDITOR "$1"
+    "$TXT_EDITOR" "$1"
 
-    md5sum2="$(printf "%.33s" $(md5sum $1))"
+    md5sum2="$(printf "%.33s" $(md5sum "$1"))"
 
-    if [[ $new == "true"  && "$md5sum1" == "$md5sum2" ]]
+    if [[ "$new" == "true"  && "$md5sum1" == "$md5sum2" ]]
     then
-        rm -f $1
+        rm -f "$1"
 
     elif [[ "$md5sum1" != "$md5sum2" ]]
     then
-        update_last_modified $1
+        update_last_modified "$1"
     fi
 }
 
@@ -217,56 +162,53 @@ file_exists()
 is_new_file()
 {
     touch "$1"
-    chmod u+x $1  # making file executable
+    chmod u+x "$1"             # making file executable
 
-    insert_shebang_header $1 # inserting shebang and header
+    insert_shebang_header "$1" # inserting shebang and header
 
     new=true
-    file_exists $1
+    file_exists "$1"
 }
 
 
 help()
 {
-    echo -e "Usage : ${W}kode${OFF} [option] [file...]"
-    echo -e " -h    --help                     Print help"
-    echo -e " -v    --version                  Print version"
-    echo -e " -a    --set-author               Set author name"
-    echo -e " -e    --set-editor               Set editor"
-    echo -e " -t    --toggle-code-insertion    toggle code insertion"
+    printf  "${OFF}Usage : ${W}kode${OFF} [-hvt] [-a name] [file...]\n"
+    printf  " -h    --help                     Print help\n"
+    printf  " -v    --version                  Print version\n"
+    printf  " -a    --set-author               Set author name\n"
+    printf  " -t    --toggle-code-insertion    toggle code insertion\n"
 }
 
 
 version()
 {
-    echo "kode v4.1"
-    echo "A bash script to"
-    echo " -> Add shebang"
-    echo " -> Add info header"
-    echo " -> Add code template (can be toggled)"
-    echo " -> Make code executable"
-    echo " -> Update Last modified column in info header"
-    echo
-    echo "Author : https://github.com/laraib07"
-    echo
-    echo "Supported languages : "
-    echo "bash, c, c++, c#, css, java, javascript, perl,"
-    echo "php, python, ruby, rust, swift, typescript."
+    printf "${OFF}kode v4.1\n"
+    printf "A bash script to\n"
+    printf " -> Add shebang\n"
+    printf " -> Add info header\n"
+    printf " -> Add code template (can be toggled)\n"
+    printf " -> Make code executable\n"
+    printf " -> Update Last modified column in info header\n\n"
+    printf "Author : https://github.com/laraib07\n\n"
+    printf "Supported languages : \n"
+    printf "bash, c, c++, c#, css, java, javascript, perl,\n"
+    printf "php, python, ruby, rust, swift, typescript.\n"
 }
 
 
 # if no argument provided
 if [[ -z "$1" ]]
 then
-    echo "No argument provided."
-    echo "Provide atleast one argument."
+    printf "No argument provided.\n"
+    printf "Provide atleast one argument.\n"
 fi
 
 
 # Driver Code
 while [[ -n "$1" ]]
 do
-    case $1 in
+    case "$1" in
         "-h" | "--help" )
             help ;;
 
@@ -274,25 +216,30 @@ do
             version ;;
 
         "-a" | "--set-author" )
-            set_author ;;
-
-        "-e" | "--set-editor" )
-            set_text_editor ;;
+            if [[ -n "$2" ]]
+            then
+                sed -i "0,/^AUTHOR.*/{s//AUTHOR=$2/}" "$CONFIG_FILE"
+                printf "Author name set to $2.\n" 
+            else
+                printf "Usage : kode -a name\n"
+            fi
+            shift
+            ;;
 
         "-t" | "--toggle-code-insertion" )
             toggle_code_insertion ;;
 
         [!-]* )
             if [[ -f "$1" ]]; then
-                file_exists $1
+                file_exists "$1"
             else
-                is_new_file  $1
+                is_new_file  "$1"
             fi
             ;;
 
         * )
-            echo "$1 is Invalid Option" >&2
-            echo "Try \"-h\" or \"--help\" for Help!"
+            printf " $1 is invalid option\n" 
+            printf "Try \"-h\" or \"--help\" for help!\n"
             ;;
     esac
     shift

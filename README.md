@@ -40,35 +40,35 @@ git clone https://github.com/laraib07/kode.git
 chmod 755 kode
 ```
 
-5. Move kode to bin folder.
+5. Create a symlink if kode to bin folder.
 
 For termux
 ```bash
-mv kode $PREFIX/bin
+ln -s kode $PREFIX/bin/kode
 ```
 
 for linux desktop
 ```bash
-sudo mv kode /usr/bin
+sudo ln -s kode /usr/bin/kode
 ```
 
-6. Move .kode folder to home.
+6. Copy .kode folder to home.
 ```bash
-mv .kode $HOME
+cp -r .kode $HOME
 ```
 
-7. To set author name and editor
+7. To set author name 
 
 **Necessary**
 
 ```bash
-kode -a -e
+kode -a name
 ```
 
-8. You can get rid of kode repo now.
-
+8. I keep imoroving this script. So to update cd to kode
+and
 ```bash
-rm -rf kode
+it pull
 ```
 
 ## Screenshots
