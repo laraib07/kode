@@ -40,7 +40,7 @@ git clone https://github.com/laraib07/kode.git
 chmod 755 kode
 ```
 
-5. Create a symlink if kode to bin folder.
+5. Create a symlink of kode to bin folder.
 
 For termux
 ```bash
@@ -68,7 +68,7 @@ kode -a name
 8. I keep imoroving this script. So to update cd to kode
 and
 ```bash
-it pull
+git pull
 ```
 
 ## Screenshots
