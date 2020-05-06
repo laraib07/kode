@@ -2,7 +2,7 @@
 
 #**************************************************#
 #                                                  #
-#   kode v4.1                                      #
+#   kode v4.5                                      #
 #   A bash script to                               #
 #   -> Add shebang                                 #
 #   -> Add info header                             #
@@ -183,7 +183,7 @@ help()
 
 version()
 {
-    printf "${OFF}kode v4.1\n"
+    printf "${OFF}kode v4.5\n"
     printf "A bash script to\n"
     printf " -> Add shebang\n"
     printf " -> Add info header\n"
