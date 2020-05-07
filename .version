@@ -22,13 +22,13 @@ v5:
         alias kode="\"$PWD/kode\""
       or add:
         alias kode="<path_to_kode>/kode"
-      to your ~/.bashrc file, substiting in the full path
+      to your ~/.bashrc file, substituting in the full path
 
   tech debt:
   - Rehaul of the overall flow, making adding new templates easier
   - Using getopts for arg parsing
   - Added debugging for quickly iterating through example files
   - Added config dump (flag '-d') for debugging
-  - Moved version info to a seperate file
-  - Reduced duplication and setting things in mulitple places
+  - Moved version info to a separate file
+  - Reduced duplication and setting things in multiple places
   - Added an alert for non-scripting language files that don't have an available template
