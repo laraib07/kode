@@ -16,7 +16,7 @@ ruby, rust, swift, typescript.
 
 ![preview.gif](https://raw.githubusercontent.com/laraib07/kode/master/preview/preview2.gif)
 
-### created by [Laraib07](https://github.com/laraib07)
+### Author [Laraib07](https://github.com/laraib07) and [GetOutOfMyBakery](https://github.com/GetOutOfMyBakery)
 
 ## Installation
 1.
