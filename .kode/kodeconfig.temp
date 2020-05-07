@@ -1,0 +1,3 @@
+KODE_AUTHOR="<unset>"
+EDITOR=${VISUAL:-"${EDITOR:-vi}"}
+INSERT_CODE=true
