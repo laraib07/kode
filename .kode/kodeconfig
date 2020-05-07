@@ -1,3 +1,0 @@
-AUTHOR="Set name with -a"
-TXT_EDITOR=${VISUAL:-"${EDITOR:-vi}"}
-INSERT_CODE=true

@@ -1,0 +1,34 @@
+kode v5
+
+A bash script to
+ -> Add shebang
+ -> Add info header
+ -> Add code template (can be toggled)
+ -> Make code executable
+ -> Update Last modified column in info header
+
+Authors : https://github.com/laraib07
+          https://github.com/GetOutOfMyBakery
+
+Supported languages :
+  bash, c, c++, c#, css, java, javascript, perl,
+  php, python, ruby, rust, swift, sh, typescript.
+
+v5:
+  features:
+  - Added support for OSX default (or other OS's with md5 as default)
+  - Removed need for ~/.kode directory (manually delete this if a previous version has run)
+  - Locally run without install or sudo:
+        alias kode="\"$PWD/kode\""
+      or add:
+        alias kode="<path_to_kode>/kode"
+      to your ~/.bashrc file, substiting in the full path
+
+  tech debt:
+  - Rehaul of the overall flow, making adding new templates easier
+  - Using getopts for arg parsing
+  - Added debugging for quickly iterating through example files
+  - Added config dump (flag '-d') for debugging
+  - Moved version info to a seperate file
+  - Reduced duplication and setting things in mulitple places
+  - Added an alert for non-scripting language files that don't have an available template
