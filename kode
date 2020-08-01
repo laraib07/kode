@@ -4,7 +4,6 @@ program_name=$(basename "$0")
 
 # Adds support so that the 'kode' checkout dir is where the config is stored and read from
 SCRIPT_ROOT_DIR="$(dirname "$(readlink -f "$0")")"
-cd "$SCRIPT_ROOT_DIR" || exit 1
 
 #colors and variables
 R='\033[1;31m'
@@ -23,7 +22,7 @@ DEBUG=false # When enabled, prints the file, rather than opening in editor
 #### FUNCTIONS
 
 function help_function() {
-    printf "Usage : ${W}$program_name${OFF}  [-dhvtx] [-a name] [file...]
+    printf "Usage : ${W}$program_name${OFF}  [-dhvt] [-a name] [file...]
 
     -a\t Set Author Name (e.g. '$program_name -a \"Author Name\"')
     -d\t Display config information (for debugging)
@@ -35,7 +34,8 @@ function help_function() {
 
 
 function source_config() {
-    # Generates a default config from the temp file, if not present, and loads kodeconfig
+    # Generates a default config from the temp file, 
+    # if not present, and loads kodeconfig
     if [[ ! -f "$CONFIG_FILE" ]]; then
         cp "$DEFAULT_CONFIG_FILE" "$CONFIG_FILE"
     fi
@@ -44,20 +44,20 @@ function source_config() {
     source "$CONFIG_FILE"
 }
 
+
 function display_config() {
-    local display_config_format="%-25s %s\n"
+    local format="%-25s %s\n"
     source_config   # ensure the config exists
 
-    printf "$display_config_format" "env:" "$(which env)"
-    printf "$display_config_format" "CODE_TEMPLATE:" "$CODE_TEMPLATE"
-    printf "$display_config_format" "CONFIG_FILE:" "$CONFIG_FILE"
-    printf "$display_config_format" "DEFAULT_CONFIG_FILE:" "$DEFAULT_CONFIG_FILE"
-    printf "\n"
-
-    printf "\n$CONFIG_FILE:\n\n"
+    printf "$format" "env:" "$(which env)"
+    printf "$format" "CODE_TEMPLATE:" "$CODE_TEMPLATE"
+    printf "$format" "CONFIG_FILE:" "$CONFIG_FILE"
+    printf "$format" "DEFAULT_CONFIG_FILE:" "$DEFAULT_CONFIG_FILE"
+    printf "\n\n$CONFIG_FILE:\n\n"
     cat "$CONFIG_FILE"
     exit 0
 }
+
 
 function set_author() {
     source_config   # ensure the config exists
@@ -65,6 +65,7 @@ function set_author() {
     printf "Author name set to \"$1\".\n"
     exit 0
 }
+
 
 function header_template() {
     # Pass open and closing comments character: $1
@@ -77,10 +78,11 @@ function header_template() {
     printf "$FORMAT" "#  Last modified :" "$DATE" "#"
     printf "$FORMAT" "#  Notes         :" "" "#"
     printf "$FORMAT" "#  Description   :" "" "#"
-
     printf "$FORMAT" "#" "" "  #"
+
     printf "#*************************************************$1\n\n"
 }
+
 
 function insert_code_template() {
     # Generates code template by matching pattern: `.extension` to `./.kode/extension.temp`
@@ -90,11 +92,14 @@ function insert_code_template() {
         template_file="$CODE_TEMPLATE/$extension.temp"
         if [[ -f "$template_file" ]]; then
             cat "$template_file" >> "$filename"
+
         else
             printf "No template exists for extension: $extension\n"
+
         fi
     fi
 }
+
 
 function check_if_scripting_language() {
     case "$filename" in
@@ -104,6 +109,7 @@ function check_if_scripting_language() {
         *.sh ) scripting_language="bash";;
     esac
 }
+
 
 function generate_header() {
     COMMENT_CHARACTER="/"   # Default to '/'
@@ -115,37 +121,50 @@ function generate_header() {
     fi
 
     header_template "$COMMENT_CHARACTER" >> "$filename"
-    if [[ "$INSERT_CODE" == true && -z "$scripting_language" ]]; then insert_code_template; fi
+
+    if [[ "$INSERT_CODE" == true && -z "$scripting_language" ]]; then 
+        insert_code_template
+    fi
 }
+
 
 function update_last_modified() {
     replace_with=$(printf "$FORMAT" "#  Last modified :" "${DATE}" '#')
     sed -i "0,/^#  Last modified.*/{s//${replace_with}/}" "$1"  # update first occurrence of "Last modified"
 }
 
+
 function toggle_config_state() {
     # Toggles a boolean kodeconfig var
-    if [[ -z "$1" ]];
-        then printf "Expected kodeconfig variable"; exit 1;
+    if [[ -z "$1" ]]; then
+            printf "Expected kodeconfig variable"
+            exit 1;
+
     else
         kodeconfig_var="$1"
+
     fi
 
     current_toggle_state="$(grep "$kodeconfig_var" "$CONFIG_FILE" | cut -d '=' -f 2)"
 
-    if [[ "$current_toggle_state" = true ]]; then
+    if [[ "$current_toggle_state" == true ]]; then
         sed -i "s/$kodeconfig_var=true/$kodeconfig_var=false/" "$CONFIG_FILE"
         printf "$kodeconfig_var ${R}disabled.${OFF}\n"
-    elif [[ "$current_toggle_state" = false  ]]; then
+
+    elif [[ "$current_toggle_state" == false  ]]; then
         sed -i "s/$kodeconfig_var=false/$kodeconfig_var=true/" "$CONFIG_FILE"
         printf  "$kodeconfig_var ${G}enabled.${OFF}\n"
+
     elif [[ "$current_toggle_state" ]]; then
         printf "Key \"$kodeconfig_var\" has value \"$current_toggle_state\" in \"$CONFIG_FILE\". Unable to toggle.\n"
+
     else
         printf "Key \"$kodeconfig_var\" not found in \"$CONFIG_FILE\"\n"
         exit 1
+
     fi
 }
+
 
 function toggle_code_insertion() {
     source_config   # ensure the config exists
@@ -153,21 +172,27 @@ function toggle_code_insertion() {
     exit 0
 }
 
+
 function determine_md5_program() {
     # Added support for OSX default (or other OS's with md5 as default)
     if [[ $(type -p md5sum ) ]]; then
         printf "md5sum"
+
     elif [[ $(type -p md5 ) ]]; then
         printf "md5"
+
     else
         printf "Please install 'md5sum' or 'md5' to use this program\n"
         exit 1
+
     fi
 }
+
 
 function generate_md5_checksum() {
     printf "$($md5_command "$1" | cut -d " " -f 1)"
 }
+
 
 function generate_new_file() {
     generate_header "$filename"
@@ -175,30 +200,39 @@ function generate_new_file() {
     new=true
 }
 
+
 function kodify() {
     # Handles generating a new file with the appropriate headers
     # and template (where supported)
 
     new=false
-    if [[ ! -f "$filename" ]]; then generate_new_file; fi
+    if [[ ! -f "$filename" ]]; then 
+        generate_new_file 
+    fi
 
     md5_before="$(generate_md5_checksum "$filename")"
     if [[ "$DEBUG" == true ]]; then
         cat "$filename"
+
     else
         "$EDITOR" "$filename"
+
     fi
     md5_after="$(generate_md5_checksum "$filename")"
 }
+
 
 function post_processing() {
     if [[ "$new" = true  && "$md5_before" == "$md5_after" ]]; then
         # Delete the file if it's only the default template
         rm -f "$filename"
+
     elif [[ "$md5_before" != "$md5_after" ]]; then
         update_last_modified "$filename"
+
     fi
 }
+
 
 function version() {
     cat "$SCRIPT_ROOT_DIR/.version"
@@ -207,6 +241,7 @@ function version() {
 
 
 #### Parse Args and Setup
+
 md5_command=$(determine_md5_program)
 
 while getopts ":dhvta:" flag; do
@@ -221,8 +256,16 @@ while getopts ":dhvta:" flag; do
     esac
 done
 
-if [[ -z "$1" ]]; then printf "$program_name: No file provided\n"; help_function; else filename="$1"; fi
-source_config
+if [[ -z "$1" ]]; then 
+    printf "$program_name: No file provided\n"
+    help_function
+
+else 
+    filename="$1"
+    source_config
+
+fi
+
 
 #### RUN
 kodify

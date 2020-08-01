@@ -14,6 +14,11 @@ Supported languages :
   bash, c, c++, c#, css, java, javascript, perl,
   php, python, ruby, rust, swift, sh, typescript.
 
+--------------------------------------------------------
+
+v5.1:
+  -minor bugs fixes
+
 v5:
   features:
   - Added support for OSX default (or other OS's with md5 as default)

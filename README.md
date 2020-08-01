@@ -52,11 +52,6 @@ for linux desktop
 sudo ln -s $PWD/kode /usr/bin/kode
 ```
 
-6. Create a symlink of .kode folder to home.
-```bash
-ln -s $PWD/.kode $HOME/.kode
-```
-
 7. To set author name 
 
 **Necessary**
@@ -65,7 +60,7 @@ ln -s $PWD/.kode $HOME/.kode
 kode -a name
 ```
 
-8. I keep imoroving this script. So to update cd to kode
+8. I keep imoroving this script. So to update go to kode folder
 and
 ```bash
 git pull
