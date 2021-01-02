@@ -21,7 +21,7 @@ DEBUG=false # When enabled, prints the file, rather than opening in editor
 
 #### FUNCTIONS
 
-function help_function() {
+help_function() {
     printf "Usage : ${W}$program_name${OFF}  [-dhvt] [-a name] [file...]
 
     -a\t Set Author Name (e.g. '$program_name -a \"Author Name\"')
@@ -33,7 +33,7 @@ function help_function() {
 }
 
 
-function source_config() {
+source_config() {
     # Generates a default config from the temp file, 
     # if not present, and loads kodeconfig
     if [[ ! -f "$CONFIG_FILE" ]]; then
@@ -45,7 +45,7 @@ function source_config() {
 }
 
 
-function display_config() {
+display_config() {
     local format="%-25s %s\n"
     source_config   # ensure the config exists
 
@@ -59,7 +59,7 @@ function display_config() {
 }
 
 
-function set_author() {
+set_author() {
     source_config   # ensure the config exists
     sed -i "0,/^KODE_AUTHOR.*/{s//KODE_AUTHOR=\"$1\"/}" "$CONFIG_FILE"
     printf "Author name set to \"$1\".\n"
@@ -67,7 +67,7 @@ function set_author() {
 }
 
 
-function header_template() {
+header_template() {
     # Pass open and closing comments character: $1
     printf "$1*************************************************#\n"
 
@@ -84,7 +84,7 @@ function header_template() {
 }
 
 
-function insert_code_template() {
+insert_code_template() {
     # Generates code template by matching pattern: `.extension` to `./.kode/extension.temp`
     extension="${filename##*.}" # Strip everything before the last '.' in the filename
 
@@ -101,17 +101,18 @@ function insert_code_template() {
 }
 
 
-function check_if_scripting_language() {
+check_if_scripting_language() {
     case "$filename" in
-        *.pl ) scripting_language="perl";;
-        *.py ) scripting_language="python3";;
-        *.rb ) scripting_language="ruby";;
-        *.sh ) scripting_language="bash";;
+        *.pl ) : "perl";;
+        *.py ) : "python3";;
+        *.rb ) : "ruby";;
+        *.sh ) : "bash";;
     esac
+    scripting_language="$_"
 }
 
 
-function generate_header() {
+generate_header() {
     COMMENT_CHARACTER="/"   # Default to '/'
 
     check_if_scripting_language
@@ -128,13 +129,13 @@ function generate_header() {
 }
 
 
-function update_last_modified() {
+update_last_modified() {
     replace_with=$(printf "$FORMAT" "#  Last modified :" "${DATE}" '#')
     sed -i "0,/^#  Last modified.*/{s//${replace_with}/}" "$1"  # update first occurrence of "Last modified"
 }
 
 
-function toggle_config_state() {
+toggle_config_state() {
     # Toggles a boolean kodeconfig var
     if [[ -z "$1" ]]; then
             printf "Expected kodeconfig variable"
@@ -166,14 +167,14 @@ function toggle_config_state() {
 }
 
 
-function toggle_code_insertion() {
+toggle_code_insertion() {
     source_config   # ensure the config exists
     toggle_config_state "INSERT_CODE"
     exit 0
 }
 
 
-function determine_md5_program() {
+determine_md5_program() {
     # Added support for OSX default (or other OS's with md5 as default)
     if [[ $(type -p md5sum ) ]]; then
         printf "md5sum"
@@ -189,19 +190,19 @@ function determine_md5_program() {
 }
 
 
-function generate_md5_checksum() {
+generate_md5_checksum() {
     printf "$($md5_command "$1" | cut -d " " -f 1)"
 }
 
 
-function generate_new_file() {
+generate_new_file() {
     generate_header "$filename"
     chmod u+x "$filename"
     new=true
 }
 
 
-function kodify() {
+kodify() {
     # Handles generating a new file with the appropriate headers
     # and template (where supported)
 
@@ -222,7 +223,7 @@ function kodify() {
 }
 
 
-function post_processing() {
+post_processing() {
     if [[ "$new" = true  && "$md5_before" == "$md5_after" ]]; then
         # Delete the file if it's only the default template
         rm -f "$filename"
@@ -234,7 +235,7 @@ function post_processing() {
 }
 
 
-function version() {
+version() {
     cat "$SCRIPT_ROOT_DIR/.version"
     exit 0
 }
